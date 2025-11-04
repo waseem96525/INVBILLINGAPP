@@ -4,7 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { CartItem } from "@/types";
-import { Minus, Plus, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2, XCircle } from "lucide-react"; // Import XCircle for clear cart icon
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -12,22 +12,32 @@ interface CartProps {
   cartItems: CartItem[];
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
-  onCheckout: (discount: number) => void; // Modified to pass discount
+  onCheckout: (discount: number) => void;
   children?: React.ReactNode;
-  discount: number; // New prop for discount percentage
-  onDiscountChange: (discount: number) => void; // New prop for discount change handler
+  discount: number;
+  onDiscountChange: (discount: number) => void;
+  onClearCart: () => void; // New prop for clearing the cart
 }
 
-const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, children, discount, onDiscountChange }) => {
+const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, children, discount, onDiscountChange, onClearCart }) => {
   const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discountAmount = subtotalBeforeDiscount * (discount / 100);
   const subtotal = subtotalBeforeDiscount - discountAmount;
-  const total = subtotal; // Total is now just subtotal after discount, no tax
+  const total = subtotal;
 
   return (
     <Card className="w-full max-w-md h-full flex flex-col rounded-lg">
-      <CardHeader className="border-b pb-4">
+      <CardHeader className="border-b pb-4 flex-row items-center justify-between"> {/* Adjusted for button */}
         <CardTitle className="text-2xl font-bold">Your Cart</CardTitle>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onClearCart}
+          disabled={cartItems.length === 0}
+          className="text-red-500 hover:text-red-600 border-red-500 hover:border-red-600"
+        >
+          <XCircle className="mr-2 h-4 w-4" /> Clear Cart
+        </Button>
       </CardHeader>
       <CardContent className="flex-grow p-0">
         {cartItems.length === 0 ? (

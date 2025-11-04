@@ -14,9 +14,14 @@ const POSPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [customerName, setCustomerName] = useState("");
-  const [discount, setDiscount] = useState(0); // New state for discount
+  const [discount, setDiscount] = useState(0);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [lastSale, setLastSale] = useState<SaleRecord | null>(null);
+  const [searchTerm, setSearchTerm] = useState(""); // New state for search term
+
+  const filteredProducts = products.filter((product) =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleAddToCart = (product: Product) => {
     setCartItems((prevItems) => {
@@ -65,28 +70,36 @@ const POSPage: React.FC = () => {
     showSuccess("Item removed from cart.");
   };
 
+  const handleClearCart = () => {
+    setCartItems([]);
+    setDiscount(0);
+    setCustomerName("");
+    setPaymentMethod("Cash");
+    showSuccess("Cart cleared!");
+  };
+
   const handleCheckout = (appliedDiscount: number) => {
     const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const discountAmount = subtotalBeforeDiscount * (appliedDiscount / 100);
     const subtotal = subtotalBeforeDiscount - discountAmount;
-    const total = subtotal; // Total is now just subtotal after discount, no tax
+    const total = subtotal;
 
     const newSale: Omit<SaleRecord, "id" | "timestamp"> = {
       items: cartItems,
       subtotal,
-      discount: appliedDiscount, // Store the applied discount percentage
+      discount: appliedDiscount,
       total,
       paymentMethod,
       customerName: customerName || undefined,
     };
 
-    recordSale(newSale); // This also updates product stock
-    setLastSale({ ...newSale, id: String(Date.now()), timestamp: new Date().toISOString() }); // Mock ID for immediate display
+    recordSale(newSale);
+    setLastSale({ ...newSale, id: String(Date.now()), timestamp: new Date().toISOString() });
     setIsReceiptOpen(true);
-    setCartItems([]); // Clear the cart after checkout
+    setCartItems([]);
     setCustomerName("");
     setPaymentMethod("Cash");
-    setDiscount(0); // Reset discount after checkout
+    setDiscount(0);
     showSuccess("Checkout successful!");
   };
 
@@ -94,9 +107,18 @@ const POSPage: React.FC = () => {
     <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Product List */}
       <div className="flex-1 p-6 overflow-y-auto">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-50">Products</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-50">Products</h1>
+          <Input
+            type="text"
+            placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-xs"
+          />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
           ))}
         </div>
@@ -111,6 +133,7 @@ const POSPage: React.FC = () => {
           onCheckout={handleCheckout}
           discount={discount}
           onDiscountChange={setDiscount}
+          onClearCart={handleClearCart} {/* Pass the new handler */}
         >
           <div className="space-y-4 p-4 border-t border-gray-200 dark:border-gray-700">
             <div>
