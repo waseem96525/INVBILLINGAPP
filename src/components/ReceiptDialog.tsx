@@ -72,12 +72,8 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
               </div>
             )}
             <div className="flex justify-between font-medium">
-              <span>Subtotal (after discount):</span>
+              <span>Total (after discount):</span>
               <span>₹{subtotalAfterDiscount.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between font-medium">
-              <span>Tax:</span>
-              <span>₹{sale.tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-xl font-bold mt-2">
               <span>Total:</span>

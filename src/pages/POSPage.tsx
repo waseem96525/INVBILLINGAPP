@@ -69,15 +69,12 @@ const POSPage: React.FC = () => {
     const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const discountAmount = subtotalBeforeDiscount * (appliedDiscount / 100);
     const subtotal = subtotalBeforeDiscount - discountAmount;
-    const taxRate = 0.18; // Example Indian GST rate (18%)
-    const tax = subtotal * taxRate;
-    const total = subtotal + tax;
+    const total = subtotal; // Total is now just subtotal after discount, no tax
 
     const newSale: Omit<SaleRecord, "id" | "timestamp"> = {
       items: cartItems,
       subtotal,
       discount: appliedDiscount, // Store the applied discount percentage
-      tax,
       total,
       paymentMethod,
       customerName: customerName || undefined,

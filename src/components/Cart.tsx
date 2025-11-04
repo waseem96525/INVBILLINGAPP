@@ -22,9 +22,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
   const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const discountAmount = subtotalBeforeDiscount * (discount / 100);
   const subtotal = subtotalBeforeDiscount - discountAmount;
-  const taxRate = 0.18; // Example Indian GST rate (18%)
-  const tax = subtotal * taxRate;
-  const total = subtotal + tax;
+  const total = subtotal; // Total is now just subtotal after discount, no tax
 
   return (
     <Card className="w-full max-w-md h-full flex flex-col rounded-lg">
@@ -105,13 +103,9 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
             <span>-₹{discountAmount.toFixed(2)}</span>
           </div>
         )}
-        <div className="w-full flex justify-between text-lg font-medium mb-2">
-          <span>Subtotal (after discount):</span>
-          <span>₹{subtotal.toFixed(2)}</span>
-        </div>
         <div className="w-full flex justify-between text-lg font-medium mb-4">
-          <span>Tax ({(taxRate * 100).toFixed(0)}%):</span>
-          <span>₹{tax.toFixed(2)}</span>
+          <span>Total (after discount):</span>
+          <span>₹{subtotal.toFixed(2)}</span>
         </div>
         <Separator className="my-4" />
         <div className="w-full flex justify-between text-2xl font-bold mb-4">
