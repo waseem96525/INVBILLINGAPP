@@ -1,16 +1,16 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { Product, SaleRecord, CartItem } from "@/types";
 
-// Dummy product data for a clothing and jewelry shop
+// Dummy product data for a clothing and jewelry shop with specific images
 const initialProducts: Product[] = [
-  { id: "1", name: "Men's T-Shirt", price: 799.00, image: "/placeholder.svg", stock: 50, size: "M", color: "Blue" },
-  { id: "2", name: "Women's Jeans", price: 1999.00, image: "/placeholder.svg", stock: 40, size: "28", color: "Dark Wash" },
-  { id: "3", name: "Silver Necklace", price: 2500.00, image: "/placeholder.svg", stock: 35, color: "Silver" },
-  { id: "4", name: "Leather Belt", price: 850.00, image: "/placeholder.svg", stock: 60, size: "L", color: "Brown" },
-  { id: "5", name: "Gold Earrings", price: 3200.00, image: "/placeholder.svg", stock: 45, color: "Gold" },
-  { id: "6", name: "Summer Dress", price: 1200.00, image: "/placeholder.svg", stock: 70, size: "S", color: "Floral Print" },
-  { id: "7", name: "Men's Watch", price: 4500.00, image: "/placeholder.svg", stock: 25, color: "Black" },
-  { id: "8", name: "Scarf", price: 499.00, image: "/placeholder.svg", stock: 30, color: "Red" },
+  { id: "1", name: "Men's T-Shirt", price: 799.00, image: "https://picsum.photos/seed/tshirt/200/200", stock: 50, size: "M", color: "Blue" },
+  { id: "2", name: "Women's Jeans", price: 1999.00, image: "https://picsum.photos/seed/jeans/200/200", stock: 40, size: "28", color: "Dark Wash" },
+  { id: "3", name: "Silver Necklace", price: 2500.00, image: "https://picsum.photos/seed/necklace/200/200", stock: 35, color: "Silver" },
+  { id: "4", name: "Leather Belt", price: 850.00, image: "https://picsum.photos/seed/belt/200/200", stock: 60, size: "L", color: "Brown" },
+  { id: "5", name: "Gold Earrings", price: 3200.00, image: "https://picsum.photos/seed/earrings/200/200", stock: 45, color: "Gold" },
+  { id: "6", name: "Summer Dress", price: 1200.00, image: "https://picsum.photos/seed/dress/200/200", stock: 70, size: "S", color: "Floral Print" },
+  { id: "7", name: "Men's Watch", price: 4500.00, image: "https://picsum.photos/seed/watch/200/200", stock: 25, color: "Black" },
+  { id: "8", name: "Scarf", price: 499.00, image: "https://picsum.photos/seed/scarf/200/200", stock: 30, color: "Red" },
 ];
 
 interface AppContextType {
