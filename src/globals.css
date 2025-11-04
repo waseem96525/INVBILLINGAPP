@@ -101,6 +101,22 @@
 }
 
 @media print {
+  body > *:not(.receipt-print-area) {
+    display: none !important;
+  }
+
+  .receipt-print-area {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    overflow: visible;
+  }
+
   .print\\:hidden {
     display: none !important;
   }
