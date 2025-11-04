@@ -107,16 +107,63 @@
 
   .receipt-print-area {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: auto;
-    margin: 0;
-    padding: 0;
-    overflow: visible;
+    position: static !important; /* Remove absolute positioning for print */
+    left: auto !important;
+    top: auto !important;
+    width: auto !important; /* Let content define width */
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 0 auto !important; /* Center the receipt if needed */
+    padding: 1rem !important; /* Add some padding for print */
+    overflow: visible !important;
+    color: black !important; /* Ensure text is black for print */
+    background-color: white !important; /* Ensure background is white for print */
+    box-shadow: none !important; /* Remove shadows */
+    border: none !important; /* Remove borders */
   }
 
+  /* Ensure all direct children of receipt-print-area are visible */
+  .receipt-print-area > * {
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  /* Ensure text and common elements are visible and have default styling */
+  .receipt-print-area p,
+  .receipt-print-area span,
+  .receipt-print-area div,
+  .receipt-print-area h2 {
+    color: black !important;
+    background-color: transparent !important;
+    visibility: visible !important;
+    /* Ensure block display for layout, but allow flex for specific elements */
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: left !important; /* Default to left align for receipt details */
+  }
+
+  /* Specific override for elements that should be flex */
+  .receipt-print-area .flex {
+    display: flex !important;
+  }
+
+  /* Override specific hidden classes if they are applied to content that should be visible */
+  .receipt-print-area .hidden.print\:block {
+    display: block !important; /* For the print-specific header */
+  }
+
+  /* Ensure separators are visible */
+  .receipt-print-area .my-4 {
+    margin-top: 1rem !important;
+    margin-bottom: 1rem !important;
+  }
+  .receipt-print-area .my-2 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+
+  /* Hide elements that should truly be hidden in print */
   .print\\:hidden {
     display: none !important;
   }

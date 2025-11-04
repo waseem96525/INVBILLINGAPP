@@ -29,7 +29,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] print:w-auto print:max-w-full print:h-auto print:overflow-visible receipt-print-area">
+      <DialogContent className="sm:max-w-[425px] receipt-print-area">
         <DialogHeader className="print:hidden">
           <DialogTitle className="text-center text-2xl font-bold">Receipt</DialogTitle>
           <DialogDescription className="text-center">Thank you for your purchase!</DialogDescription>
