@@ -1,16 +1,16 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { Product, SaleRecord, CartItem } from "@/types";
 
-// Dummy product data for a clothing and jewelry shop
+// Dummy product data with stock
 const initialProducts: Product[] = [
-  { id: "1", name: "Blue Denim Jeans", price: 1200.00, image: "/placeholder.svg", stock: 30, category: "Clothing", size: "M", color: "Blue", material: "Denim" },
-  { id: "2", name: "Cotton T-Shirt", price: 450.00, image: "/placeholder.svg", stock: 50, category: "Clothing", size: "L", color: "White", material: "Cotton" },
-  { id: "3", name: "Silver Hoop Earrings", price: 800.00, image: "/placeholder.svg", stock: 20, category: "Jewelry", size: "One Size", color: "Silver", material: "Sterling Silver" },
-  { id: "4", name: "Leather Belt", price: 600.00, image: "/placeholder.svg", stock: 40, category: "Accessories", size: "L", color: "Brown", material: "Leather" },
-  { id: "5", name: "Floral Summer Dress", price: 1800.00, image: "/placeholder.svg", stock: 25, category: "Clothing", size: "S", color: "Multi-color", material: "Rayon" },
-  { id: "6", name: "Gold Plated Necklace", price: 1500.00, image: "/placeholder.svg", stock: 15, category: "Jewelry", size: "One Size", color: "Gold", material: "Brass" },
-  { id: "7", name: "Wool Scarf", price: 750.00, image: "/placeholder.svg", stock: 35, category: "Accessories", size: "One Size", color: "Grey", material: "Wool" },
-  { id: "8", name: "Men's Formal Shirt", price: 950.00, image: "/placeholder.svg", stock: 28, category: "Clothing", size: "XL", color: "Light Blue", material: "Cotton Blend" },
+  { id: "1", name: "Espresso", price: 3.50, image: "/placeholder.svg", stock: 50 },
+  { id: "2", name: "Latte", price: 4.50, image: "/placeholder.svg", stock: 40 },
+  { id: "3", name: "Cappuccino", price: 4.00, image: "/placeholder.svg", stock: 35 },
+  { id: "4", name: "Croissant", price: 2.75, image: "/placeholder.svg", stock: 60 },
+  { id: "5", name: "Muffin", price: 3.00, image: "/placeholder.svg", stock: 45 },
+  { id: "6", name: "Orange Juice", price: 3.25, image: "/placeholder.svg", stock: 70 },
+  { id: "7", name: "Sandwich", price: 7.00, image: "/placeholder.svg", stock: 25 },
+  { id: "8", name: "Salad", price: 8.50, image: "/placeholder.svg", stock: 30 },
 ];
 
 interface AppContextType {

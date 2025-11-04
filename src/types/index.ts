@@ -3,11 +3,7 @@ export type Product = {
   name: string;
   price: number;
   image: string;
-  stock: number;
-  category?: string; // e.g., "Clothing", "Jewelry", "Accessories"
-  size?: string;    // e.g., "S", "M", "L", "XL", "One Size"
-  color?: string;   // e.g., "Red", "Blue", "Gold"
-  material?: string; // e.g., "Cotton", "Silver", "Leather"
+  stock: number; // Added stock to product type
 };
 
 export type CartItem = Product & {
@@ -19,7 +15,7 @@ export type SaleRecord = {
   timestamp: string;
   items: CartItem[];
   subtotal: number;
-  discount: number;
+  discount: number; // Added discount to sale record
   total: number;
   paymentMethod: string;
   customerName?: string;
