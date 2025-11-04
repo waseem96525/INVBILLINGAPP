@@ -106,48 +106,40 @@
   }
 
   .receipt-print-area {
-    display: block !important;
+    /* Reset dialog-specific positioning and sizing */
     position: static !important;
     left: auto !important;
     top: auto !important;
-    width: auto !important;
+    transform: none !important; /* Remove any transform from dialog */
+    width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
-    margin: 0 auto !important;
-    padding: 1rem !important;
+    margin: 0 !important; /* Remove margin */
+    padding: 1rem !important; /* Standard padding for print */
     overflow: visible !important;
     color: black !important;
     background-color: white !important;
     box-shadow: none !important;
     border: none !important;
+    display: block !important; /* Ensure it's a block element */
   }
 
   /* Ensure all direct children of receipt-print-area are visible */
   .receipt-print-area > * {
     visibility: visible !important;
-    /* Reset display to default or inherit, then apply specific overrides */
-    display: revert !important; 
-  }
-
-  /* Ensure text and common elements are visible and have default styling */
-  .receipt-print-area p,
-  .receipt-print-area span,
-  .receipt-print-area div,
-  .receipt-print-area h2 {
+    display: block !important; /* Default to block for children */
     color: black !important;
     background-color: transparent !important;
-    visibility: visible !important;
     text-align: left !important; /* Default to left align for receipt details */
   }
 
-  /* Specific override for elements that should be flex */
+  /* Specific overrides for elements that should be flex or have specific layouts */
   .receipt-print-area .flex {
     display: flex !important;
   }
 
-  /* Override specific hidden classes if they are applied to content that should be visible */
-  .receipt-print-area .hidden.print\:block {
-    display: block !important; /* For the print-specific header */
+  .receipt-print-area .text-center {
+    text-align: center !important;
   }
 
   /* Ensure separators are visible */
