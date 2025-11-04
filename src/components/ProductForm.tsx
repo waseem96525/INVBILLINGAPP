@@ -19,6 +19,8 @@ const formSchema = z.object({
   price: z.coerce.number().min(0.01, { message: "Price must be a positive number." }),
   image: z.string().url({ message: "Image must be a valid URL." }).optional().or(z.literal("")),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a non-negative integer." }),
+  size: z.string().optional(), // Added size to form schema
+  color: z.string().optional(), // Added color to form schema
 });
 
 interface ProductFormProps {
@@ -35,6 +37,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
       price: initialData?.price || 0.01,
       image: initialData?.image || "/placeholder.svg",
       stock: initialData?.stock || 0,
+      size: initialData?.size || "", // Set default value for size
+      color: initialData?.color || "", // Set default value for color
     },
   });
 
@@ -52,7 +56,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
             <FormItem>
               <FormLabel>Product Name</FormLabel>
               <FormControl>
-                <Input placeholder="Espresso" {...field} />
+                <Input placeholder="Men's T-Shirt" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -79,6 +83,32 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
               <FormLabel>Stock Quantity</FormLabel>
               <FormControl>
                 <Input type="number" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="size"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Size (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="M, L, XL, 28, 30" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="color"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Color (Optional)</FormLabel>
+              <FormControl>
+                <Input placeholder="Blue, Red, Silver" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

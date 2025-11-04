@@ -3,7 +3,9 @@ export type Product = {
   name: string;
   price: number;
   image: string;
-  stock: number; // Added stock to product type
+  stock: number;
+  size?: string; // Added size to product type
+  color?: string; // Added color to product type
 };
 
 export type CartItem = Product & {
@@ -15,7 +17,7 @@ export type SaleRecord = {
   timestamp: string;
   items: CartItem[];
   subtotal: number;
-  discount: number; // Added discount to sale record
+  discount: number;
   total: number;
   paymentMethod: string;
   customerName?: string;
