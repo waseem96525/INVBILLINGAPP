@@ -14,7 +14,7 @@ interface CartProps {
 
 const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout }) => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.08; // Example tax rate
+  const taxRate = 0.18; // Example Indian GST rate (18%)
   const tax = subtotal * taxRate;
   const total = subtotal + tax;
 
@@ -34,7 +34,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
                   <img src={item.image} alt={item.name} className="w-12 h-12 object-cover rounded-md" />
                   <div>
                     <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">${item.price.toFixed(2)} x {item.quantity}</p>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">₹{item.price.toFixed(2)} x {item.quantity}</p>
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -71,15 +71,15 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
       <CardFooter className="flex flex-col p-4 border-t">
         <div className="w-full flex justify-between text-lg font-medium mb-2">
           <span>Subtotal:</span>
-          <span>${subtotal.toFixed(2)}</span>
+          <span>₹{subtotal.toFixed(2)}</span>
         </div>
         <div className="w-full flex justify-between text-lg font-medium mb-4">
-          <span>Tax ({taxRate * 100}%):</span>
-          <span>${tax.toFixed(2)}</span>
+          <span>Tax ({(taxRate * 100).toFixed(0)}%):</span>
+          <span>₹{tax.toFixed(2)}</span>
         </div>
         <div className="w-full flex justify-between text-2xl font-bold mb-4">
           <span>Total:</span>
-          <span>${total.toFixed(2)}</span>
+          <span>₹{total.toFixed(2)}</span>
         </div>
         <Button onClick={onCheckout} className="w-full" disabled={cartItems.length === 0}>
           Checkout
