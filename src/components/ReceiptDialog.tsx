@@ -10,7 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SaleRecord } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
-import { useAppContext } from "@/context/AppContext"; // Import useAppContext
+import { useAppContext } from "@/context/AppContext"; // Re-import useAppContext
 
 interface ReceiptDialogProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ interface ReceiptDialogProps {
 }
 
 const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) => {
-  const { shopDetails } = useAppContext(); // Use shopDetails from context
+  const { shopDetails } = useAppContext(); // Re-use shopDetails from context
 
   if (!sale) return null;
 
