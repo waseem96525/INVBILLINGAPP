@@ -22,3 +22,10 @@ export type SaleRecord = {
   paymentMethod: string;
   customerName?: string;
 };
+
+export type ShopDetails = {
+  name: string;
+  address: string;
+  phone: string;
+  email: string;
+};

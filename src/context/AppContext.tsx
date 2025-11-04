@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
-import { Product, SaleRecord, CartItem } from "@/types";
+import { Product, SaleRecord, CartItem, ShopDetails } from "@/types";
 
 // Dummy product data for a clothing and jewelry shop with specific images
 const initialProducts: Product[] = [
@@ -13,13 +13,22 @@ const initialProducts: Product[] = [
   { id: "8", name: "Scarf", price: 499.00, image: "https://picsum.photos/seed/scarf/200/200", stock: 30, color: "Red" },
 ];
 
+const initialShopDetails: ShopDetails = {
+  name: "My Awesome Shop",
+  address: "123 Main St, Anytown, USA",
+  phone: "+1 (555) 123-4567",
+  email: "info@awesomeshop.com",
+};
+
 interface AppContextType {
   products: Product[];
   salesRecords: SaleRecord[];
+  shopDetails: ShopDetails; // Added shopDetails
   addProduct: (product: Omit<Product, "id">) => void;
   updateProduct: (productId: string, updatedFields: Partial<Product>) => void;
   recordSale: (sale: Omit<SaleRecord, "id" | "timestamp">) => void;
   updateProductStock: (itemId: string, quantitySold: number) => void;
+  updateShopDetails: (details: ShopDetails) => void; // Added updateShopDetails
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -27,6 +36,7 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppContextProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [salesRecords, setSalesRecords] = useState<SaleRecord[]>([]);
+  const [shopDetails, setShopDetails] = useState<ShopDetails>(initialShopDetails); // Initialize shopDetails
 
   const addProduct = (product: Omit<Product, "id">) => {
     const newProduct: Product = { ...product, id: String(products.length + 1) };
@@ -61,15 +71,21 @@ export const AppContextProvider = ({ children }: { children: ReactNode }) => {
     );
   };
 
+  const updateShopDetails = (details: ShopDetails) => {
+    setShopDetails(details);
+  };
+
   return (
     <AppContext.Provider
       value={{
         products,
         salesRecords,
+        shopDetails, // Provide shopDetails
         addProduct,
         updateProduct,
         recordSale,
         updateProductStock,
+        updateShopDetails, // Provide updateShopDetails
       }}
     >
       {children}

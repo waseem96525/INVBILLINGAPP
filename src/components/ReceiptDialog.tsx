@@ -10,6 +10,7 @@ import { Separator } from "@/components/ui/separator";
 import { SaleRecord } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Printer } from "lucide-react";
+import { useAppContext } from "@/context/AppContext"; // Import useAppContext
 
 interface ReceiptDialogProps {
   isOpen: boolean;
@@ -18,6 +19,8 @@ interface ReceiptDialogProps {
 }
 
 const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) => {
+  const { shopDetails } = useAppContext(); // Use shopDetails from context
+
   if (!sale) return null;
 
   const handlePrint = () => {
@@ -36,8 +39,11 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
         </DialogHeader>
         <div className="py-4 print:py-0">
           <div className="hidden print:block text-center mb-4">
-            <h2 className="text-2xl font-bold">POS System Receipt</h2>
-            <p className="text-sm text-muted-foreground">Thank you for your purchase!</p>
+            <h2 className="text-2xl font-bold">{shopDetails.name}</h2> {/* Display shop name */}
+            <p className="text-sm text-muted-foreground">{shopDetails.address}</p> {/* Display shop address */}
+            {shopDetails.phone && <p className="text-xs text-muted-foreground">Phone: {shopDetails.phone}</p>}
+            {shopDetails.email && <p className="text-xs text-muted-foreground">Email: {shopDetails.email}</p>}
+            <p className="text-sm text-muted-foreground mt-2">Thank you for your purchase!</p>
           </div>
 
           <p className="text-sm text-muted-foreground mb-2">Order ID: {sale.id}</p>
