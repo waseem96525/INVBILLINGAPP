@@ -57,7 +57,7 @@ const POSPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Product List */}
       <div className="flex-1 p-6 overflow-y-auto">
         <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-gray-50">Products</h1>

@@ -10,12 +10,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
   return (
-    <Card className="w-full max-w-xs overflow-hidden shadow-lg transition-transform duration-200 hover:scale-105">
+    <Card className="w-full max-w-xs overflow-hidden rounded-lg shadow-md transition-transform duration-200 hover:scale-105 hover:shadow-lg">
       <CardHeader className="p-0">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-40 object-cover"
+          className="w-full h-40 object-cover rounded-t-lg"
         />
       </CardHeader>
       <CardContent className="p-4">

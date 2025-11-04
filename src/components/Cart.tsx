@@ -2,6 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator"; // Import Separator
 import { CartItem } from "@/types";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
@@ -19,9 +20,9 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
   const total = subtotal + tax;
 
   return (
-    <Card className="w-full max-w-md h-full flex flex-col">
-      <CardHeader>
-        <CardTitle className="text-2xl">Your Cart</CardTitle>
+    <Card className="w-full max-w-md h-full flex flex-col rounded-lg">
+      <CardHeader className="border-b pb-4">
+        <CardTitle className="text-2xl font-bold">Your Cart</CardTitle>
       </CardHeader>
       <CardContent className="flex-grow p-0">
         {cartItems.length === 0 ? (
@@ -43,14 +44,16 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
                     size="icon"
                     onClick={() => onUpdateQuantity(item.id, item.quantity - 1)}
                     disabled={item.quantity <= 1}
+                    className="h-8 w-8"
                   >
                     <Minus className="h-4 w-4" />
                   </Button>
-                  <span className="w-6 text-center">{item.quantity}</span>
+                  <span className="w-6 text-center text-sm font-medium">{item.quantity}</span>
                   <Button
                     variant="outline"
                     size="icon"
                     onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                    className="h-8 w-8"
                   >
                     <Plus className="h-4 w-4" />
                   </Button>
@@ -58,7 +61,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
                     variant="destructive"
                     size="icon"
                     onClick={() => onRemoveItem(item.id)}
-                    className="ml-2"
+                    className="ml-2 h-8 w-8"
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -77,11 +80,12 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           <span>Tax ({(taxRate * 100).toFixed(0)}%):</span>
           <span>₹{tax.toFixed(2)}</span>
         </div>
+        <Separator className="my-4" /> {/* Separator added here */}
         <div className="w-full flex justify-between text-2xl font-bold mb-4">
           <span>Total:</span>
           <span>₹{total.toFixed(2)}</span>
         </div>
-        <Button onClick={onCheckout} className="w-full" disabled={cartItems.length === 0}>
+        <Button onClick={onCheckout} className="w-full py-3 text-lg" disabled={cartItems.length === 0}>
           Checkout
         </Button>
       </CardFooter>
