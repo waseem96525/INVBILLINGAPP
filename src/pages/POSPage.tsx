@@ -133,7 +133,7 @@ const POSPage: React.FC = () => {
           onCheckout={handleCheckout}
           discount={discount}
           onDiscountChange={setDiscount}
-          onClearCart={handleClearCart} {/* Pass the new handler */}
+          onClearCart={handleClearCart}
         >
           <div className="space-y-4 p-4 border-t border-gray-200 dark:border-gray-700">
             <div>
