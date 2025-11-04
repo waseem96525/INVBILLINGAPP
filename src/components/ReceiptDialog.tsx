@@ -51,8 +51,17 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
 
           <div className="space-y-2">
             {sale.items.map((item) => (
-              <div key={item.id} className="flex justify-between">
-                <span>{item.name} x {item.quantity}</span>
+              <div key={item.id} className="flex justify-between items-start">
+                <div>
+                  <span>{item.name} x {item.quantity}</span>
+                  {(item.size || item.color) && (
+                    <p className="text-xs text-muted-foreground">
+                      {item.size && `Size: ${item.size}`}
+                      {item.size && item.color && ", "}
+                      {item.color && `Color: ${item.color}`}
+                    </p>
+                  )}
+                </div>
                 <span>₹{(item.price * item.quantity).toFixed(2)}</span>
               </div>
             ))}

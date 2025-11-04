@@ -107,25 +107,26 @@
 
   .receipt-print-area {
     display: block !important;
-    position: static !important; /* Remove absolute positioning for print */
+    position: static !important;
     left: auto !important;
     top: auto !important;
-    width: auto !important; /* Let content define width */
+    width: auto !important;
     max-width: 100% !important;
     height: auto !important;
-    margin: 0 auto !important; /* Center the receipt if needed */
-    padding: 1rem !important; /* Add some padding for print */
+    margin: 0 auto !important;
+    padding: 1rem !important;
     overflow: visible !important;
-    color: black !important; /* Ensure text is black for print */
-    background-color: white !important; /* Ensure background is white for print */
-    box-shadow: none !important; /* Remove shadows */
-    border: none !important; /* Remove borders */
+    color: black !important;
+    background-color: white !important;
+    box-shadow: none !important;
+    border: none !important;
   }
 
   /* Ensure all direct children of receipt-print-area are visible */
   .receipt-print-area > * {
-    display: block !important;
     visibility: visible !important;
+    /* Reset display to default or inherit, then apply specific overrides */
+    display: revert !important; 
   }
 
   /* Ensure text and common elements are visible and have default styling */
@@ -136,10 +137,6 @@
     color: black !important;
     background-color: transparent !important;
     visibility: visible !important;
-    /* Ensure block display for layout, but allow flex for specific elements */
-    display: block !important;
-    margin: 0 !important;
-    padding: 0 !important;
     text-align: left !important; /* Default to left align for receipt details */
   }
 
