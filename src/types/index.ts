@@ -15,6 +15,7 @@ export type SaleRecord = {
   timestamp: string;
   items: CartItem[];
   subtotal: number;
+  discount: number; // Added discount to sale record
   tax: number;
   total: number;
   paymentMethod: string;

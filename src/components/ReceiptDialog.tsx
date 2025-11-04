@@ -8,6 +8,8 @@ import {
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
 import { SaleRecord } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Printer } from "lucide-react";
 
 interface ReceiptDialogProps {
   isOpen: boolean;
@@ -18,14 +20,26 @@ interface ReceiptDialogProps {
 const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) => {
   if (!sale) return null;
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const discountAmount = sale.subtotal * (sale.discount / 100);
+  const subtotalAfterDiscount = sale.subtotal - discountAmount;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
+      <DialogContent className="sm:max-w-[425px] print:w-auto print:max-w-full print:h-auto print:overflow-visible">
+        <DialogHeader className="print:hidden">
           <DialogTitle className="text-center text-2xl font-bold">Receipt</DialogTitle>
           <DialogDescription className="text-center">Thank you for your purchase!</DialogDescription>
         </DialogHeader>
-        <div className="py-4">
+        <div className="py-4 print:py-0">
+          <div className="hidden print:block text-center mb-4">
+            <h2 className="text-2xl font-bold">POS System Receipt</h2>
+            <p className="text-sm text-muted-foreground">Thank you for your purchase!</p>
+          </div>
+
           <p className="text-sm text-muted-foreground mb-2">Order ID: {sale.id}</p>
           <p className="text-sm text-muted-foreground mb-4">Date: {new Date(sale.timestamp).toLocaleString()}</p>
 
@@ -33,7 +47,7 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
             <p className="text-sm text-muted-foreground mb-4">Customer: {sale.customerName}</p>
           )}
 
-          <Separator className="my-4" />
+          <Separator className="my-4 print:my-2" />
 
           <div className="space-y-2">
             {sale.items.map((item) => (
@@ -44,12 +58,22 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
             ))}
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-4 print:my-2" />
 
           <div className="space-y-2">
             <div className="flex justify-between font-medium">
               <span>Subtotal:</span>
               <span>₹{sale.subtotal.toFixed(2)}</span>
+            </div>
+            {sale.discount > 0 && (
+              <div className="flex justify-between font-medium text-red-500">
+                <span>Discount ({sale.discount}%):</span>
+                <span>-₹{discountAmount.toFixed(2)}</span>
+              </div>
+            )}
+            <div className="flex justify-between font-medium">
+              <span>Subtotal (after discount):</span>
+              <span>₹{subtotalAfterDiscount.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-medium">
               <span>Tax:</span>
@@ -61,9 +85,14 @@ const ReceiptDialog: React.FC<ReceiptDialogProps> = ({ isOpen, onClose, sale }) 
             </div>
           </div>
 
-          <Separator className="my-4" />
+          <Separator className="my-4 print:my-2" />
 
           <p className="text-center text-sm text-muted-foreground">Payment Method: {sale.paymentMethod}</p>
+        </div>
+        <div className="flex justify-center mt-4 print:hidden">
+          <Button onClick={handlePrint} className="w-full">
+            <Printer className="mr-2 h-4 w-4" /> Print Bill
+          </Button>
         </div>
       </DialogContent>
     </Dialog>

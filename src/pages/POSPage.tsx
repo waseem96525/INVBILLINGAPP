@@ -14,6 +14,7 @@ const POSPage: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const [customerName, setCustomerName] = useState("");
+  const [discount, setDiscount] = useState(0); // New state for discount
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
   const [lastSale, setLastSale] = useState<SaleRecord | null>(null);
 
@@ -64,8 +65,10 @@ const POSPage: React.FC = () => {
     showSuccess("Item removed from cart.");
   };
 
-  const handleCheckout = () => {
-    const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const handleCheckout = (appliedDiscount: number) => {
+    const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const discountAmount = subtotalBeforeDiscount * (appliedDiscount / 100);
+    const subtotal = subtotalBeforeDiscount - discountAmount;
     const taxRate = 0.18; // Example Indian GST rate (18%)
     const tax = subtotal * taxRate;
     const total = subtotal + tax;
@@ -73,6 +76,7 @@ const POSPage: React.FC = () => {
     const newSale: Omit<SaleRecord, "id" | "timestamp"> = {
       items: cartItems,
       subtotal,
+      discount: appliedDiscount, // Store the applied discount percentage
       tax,
       total,
       paymentMethod,
@@ -85,6 +89,7 @@ const POSPage: React.FC = () => {
     setCartItems([]); // Clear the cart after checkout
     setCustomerName("");
     setPaymentMethod("Cash");
+    setDiscount(0); // Reset discount after checkout
     showSuccess("Checkout successful!");
   };
 
@@ -107,6 +112,8 @@ const POSPage: React.FC = () => {
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
           onCheckout={handleCheckout}
+          discount={discount}
+          onDiscountChange={setDiscount}
         >
           <div className="space-y-4 p-4 border-t border-gray-200 dark:border-gray-700">
             <div>

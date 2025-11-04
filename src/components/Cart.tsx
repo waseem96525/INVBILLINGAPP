@@ -5,17 +5,23 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { CartItem } from "@/types";
 import { Minus, Plus, Trash2 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface CartProps {
   cartItems: CartItem[];
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
-  onCheckout: () => void;
-  children?: React.ReactNode; // Added children prop
+  onCheckout: (discount: number) => void; // Modified to pass discount
+  children?: React.ReactNode;
+  discount: number; // New prop for discount percentage
+  onDiscountChange: (discount: number) => void; // New prop for discount change handler
 }
 
-const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, children }) => {
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, children, discount, onDiscountChange }) => {
+  const subtotalBeforeDiscount = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountAmount = subtotalBeforeDiscount * (discount / 100);
+  const subtotal = subtotalBeforeDiscount - discountAmount;
   const taxRate = 0.18; // Example Indian GST rate (18%)
   const tax = subtotal * taxRate;
   const total = subtotal + tax;
@@ -72,10 +78,35 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           </ScrollArea>
         )}
       </CardContent>
-      {children} {/* Render children here */}
+      {children}
+      <div className="space-y-4 p-4 border-t border-gray-200 dark:border-gray-700">
+        <div>
+          <Label htmlFor="discount">Discount (%)</Label>
+          <Input
+            id="discount"
+            type="number"
+            min="0"
+            max="100"
+            placeholder="0"
+            value={discount}
+            onChange={(e) => onDiscountChange(Number(e.target.value))}
+            className="mt-1"
+          />
+        </div>
+      </div>
       <CardFooter className="flex flex-col p-4 border-t">
         <div className="w-full flex justify-between text-lg font-medium mb-2">
           <span>Subtotal:</span>
+          <span>₹{subtotalBeforeDiscount.toFixed(2)}</span>
+        </div>
+        {discount > 0 && (
+          <div className="w-full flex justify-between text-lg font-medium text-red-500 mb-2">
+            <span>Discount ({discount}%):</span>
+            <span>-₹{discountAmount.toFixed(2)}</span>
+          </div>
+        )}
+        <div className="w-full flex justify-between text-lg font-medium mb-2">
+          <span>Subtotal (after discount):</span>
           <span>₹{subtotal.toFixed(2)}</span>
         </div>
         <div className="w-full flex justify-between text-lg font-medium mb-4">
@@ -87,7 +118,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           <span>Total:</span>
           <span>₹{total.toFixed(2)}</span>
         </div>
-        <Button onClick={onCheckout} className="w-full py-3 text-lg" disabled={cartItems.length === 0}>
+        <Button onClick={() => onCheckout(discount)} className="w-full py-3 text-lg" disabled={cartItems.length === 0}>
           Checkout
         </Button>
       </CardFooter>

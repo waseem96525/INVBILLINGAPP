@@ -99,3 +99,32 @@
     @apply bg-background text-foreground;
   }
 }
+
+@media print {
+  .print\\:hidden {
+    display: none !important;
+  }
+  .print\\:block {
+    display: block !important;
+  }
+  .print\\:w-auto {
+    width: auto !important;
+  }
+  .print\\:max-w-full {
+    max-width: 100% !important;
+  }
+  .print\\:h-auto {
+    height: auto !important;
+  }
+  .print\\:overflow-visible {
+    overflow: visible !important;
+  }
+  .print\\:py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+  }
+  .print\\:my-2 {
+    margin-top: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
