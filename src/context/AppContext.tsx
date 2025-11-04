@@ -1,16 +1,16 @@
 import React, { createContext, useState, useContext, ReactNode } from "react";
 import { Product, SaleRecord, CartItem } from "@/types";
 
-// Dummy product data with stock
+// Initial product data for a clothing and jewelry shop
 const initialProducts: Product[] = [
-  { id: "1", name: "Espresso", price: 3.50, image: "/placeholder.svg", stock: 50 },
-  { id: "2", name: "Latte", price: 4.50, image: "/placeholder.svg", stock: 40 },
-  { id: "3", name: "Cappuccino", price: 4.00, image: "/placeholder.svg", stock: 35 },
-  { id: "4", name: "Croissant", price: 2.75, image: "/placeholder.svg", stock: 60 },
-  { id: "5", name: "Muffin", price: 3.00, image: "/placeholder.svg", stock: 45 },
-  { id: "6", name: "Orange Juice", price: 3.25, image: "/placeholder.svg", stock: 70 },
-  { id: "7", name: "Sandwich", price: 7.00, image: "/placeholder.svg", stock: 25 },
-  { id: "8", name: "Salad", price: 8.50, image: "/placeholder.svg", stock: 30 },
+  { id: "1", name: "Blue Denim Jeans", price: 1200.00, image: "/placeholder.svg", stock: 30, category: "Apparel", description: "Classic fit, 100% cotton denim." },
+  { id: "2", name: "Gold Plated Necklace", price: 2500.00, image: "/placeholder.svg", stock: 15, category: "Jewelry", description: "Elegant design with cubic zirconia." },
+  { id: "3", name: "Cotton T-Shirt (White)", price: 450.00, image: "/placeholder.svg", stock: 100, category: "Apparel", description: "Soft and breathable, perfect for everyday wear." },
+  { id: "4", name: "Silver Hoop Earrings", price: 800.00, image: "/placeholder.svg", stock: 25, category: "Jewelry", description: "Sterling silver, lightweight and stylish." },
+  { id: "5", name: "Leather Belt (Brown)", price: 700.00, image: "/placeholder.svg", stock: 40, category: "Accessories", description: "Genuine leather, durable and versatile." },
+  { id: "6", name: "Floral Summer Dress", price: 1800.00, image: "/placeholder.svg", stock: 20, category: "Apparel", description: "Lightweight fabric, ideal for warm weather." },
+  { id: "7", name: "Diamond Studs (Pair)", price: 15000.00, image: "/placeholder.svg", stock: 5, category: "Jewelry", description: "Small, elegant diamond studs." },
+  { id: "8", name: "Wool Scarf (Grey)", price: 950.00, image: "/placeholder.svg", stock: 35, category: "Accessories", description: "Warm and soft, 100% merino wool." },
 ];
 
 interface AppContextType {
@@ -24,7 +24,7 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
-export const AppContextProvider = ({ children }: { children: ReactNode }) => {
+export const AppContextProvider = ({ children }: { ReactNode }) => {
   const [products, setProducts] = useState<Product[]>(initialProducts);
   const [salesRecords, setSalesRecords] = useState<SaleRecord[]>([]);
 

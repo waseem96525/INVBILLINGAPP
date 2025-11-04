@@ -112,6 +112,8 @@ const DashboardPage: React.FC = () => {
               <TableHead>ID</TableHead>
               <TableHead>Image</TableHead>
               <TableHead>Name</TableHead>
+              <TableHead>Category</TableHead> {/* New Table Head */}
+              <TableHead>Description</TableHead> {/* New Table Head */}
               <TableHead>Price</TableHead>
               <TableHead>Stock</TableHead>
               <TableHead className="text-right">Actions</TableHead>
@@ -125,6 +127,8 @@ const DashboardPage: React.FC = () => {
                   <img src={product.image} alt={product.name} className="w-10 h-10 object-cover rounded-md" />
                 </TableCell>
                 <TableCell>{product.name}</TableCell>
+                <TableCell>{product.category}</TableCell> {/* New Table Cell */}
+                <TableCell className="line-clamp-2 max-w-[200px]">{product.description}</TableCell> {/* New Table Cell */}
                 <TableCell>₹{product.price.toFixed(2)}</TableCell>
                 <TableCell>{product.stock}</TableCell>
                 <TableCell className="text-right">

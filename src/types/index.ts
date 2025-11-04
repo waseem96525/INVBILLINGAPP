@@ -3,7 +3,9 @@ export type Product = {
   name: string;
   price: number;
   image: string;
-  stock: number; // Added stock to product type
+  stock: number;
+  category: string; // New field for product category
+  description?: string; // New optional field for product description
 };
 
 export type CartItem = Product & {
