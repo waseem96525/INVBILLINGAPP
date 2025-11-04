@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator"; // Import Separator
+import { Separator } from "@/components/ui/separator";
 import { CartItem } from "@/types";
 import { Minus, Plus, Trash2 } from "lucide-react";
 
@@ -11,9 +11,10 @@ interface CartProps {
   onUpdateQuantity: (itemId: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
   onCheckout: () => void;
+  children?: React.ReactNode; // Added children prop
 }
 
-const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout }) => {
+const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, onCheckout, children }) => {
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const taxRate = 0.18; // Example Indian GST rate (18%)
   const tax = subtotal * taxRate;
@@ -71,6 +72,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           </ScrollArea>
         )}
       </CardContent>
+      {children} {/* Render children here */}
       <CardFooter className="flex flex-col p-4 border-t">
         <div className="w-full flex justify-between text-lg font-medium mb-2">
           <span>Subtotal:</span>
@@ -80,7 +82,7 @@ const Cart: React.FC<CartProps> = ({ cartItems, onUpdateQuantity, onRemoveItem, 
           <span>Tax ({(taxRate * 100).toFixed(0)}%):</span>
           <span>₹{tax.toFixed(2)}</span>
         </div>
-        <Separator className="my-4" /> {/* Separator added here */}
+        <Separator className="my-4" />
         <div className="w-full flex justify-between text-2xl font-bold mb-4">
           <span>Total:</span>
           <span>₹{total.toFixed(2)}</span>
