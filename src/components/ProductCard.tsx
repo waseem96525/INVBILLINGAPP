@@ -19,8 +19,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, onAddToCart }) => {
         />
       </CardHeader>
       <CardContent className="p-4">
-        <CardTitle className="text-lg font-semibold mb-1">{product.name}</CardTitle>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-2">{product.description}</p>
+        <CardTitle className="text-lg font-semibold mb-2">{product.name}</CardTitle>
         <p className="text-gray-700 dark:text-gray-300 text-xl font-bold">₹{product.price.toFixed(2)}</p>
       </CardContent>
       <CardFooter className="p-4 pt-0">

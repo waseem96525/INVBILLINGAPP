@@ -13,15 +13,12 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Product } from "@/types";
-import { Textarea } from "@/components/ui/textarea"; // Import Textarea
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Product name must be at least 2 characters." }),
   price: z.coerce.number().min(0.01, { message: "Price must be a positive number." }),
   image: z.string().url({ message: "Image must be a valid URL." }).optional().or(z.literal("")),
   stock: z.coerce.number().int().min(0, { message: "Stock must be a non-negative integer." }),
-  category: z.string().min(1, { message: "Category is required." }), // New field
-  description: z.string().optional(), // New field
 });
 
 interface ProductFormProps {
@@ -38,8 +35,6 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
       price: initialData?.price || 0.01,
       image: initialData?.image || "/placeholder.svg",
       stock: initialData?.stock || 0,
-      category: initialData?.category || "", // Default for new field
-      description: initialData?.description || "", // Default for new field
     },
   });
 
@@ -57,33 +52,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialData, onSubmit, onCanc
             <FormItem>
               <FormLabel>Product Name</FormLabel>
               <FormControl>
-                <Input placeholder="Blue Denim Jeans" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="category"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input placeholder="Apparel, Jewelry, Accessories" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="description"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Description</FormLabel>
-              <FormControl>
-                <Textarea placeholder="Classic fit, 100% cotton denim." {...field} />
+                <Input placeholder="Espresso" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
