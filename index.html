@@ -242,6 +242,10 @@
             <i class="fa-solid fa-receipt w-5"></i>
             <span>Invoices</span>
           </div>
+          <div onclick="showSection('exchanges')" class="nav-link flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="nav-exchanges">
+            <i class="fa-solid fa-exchange-alt w-5"></i>
+            <span>Exchanges</span>
+          </div>
           <div onclick="showSection('reports')" class="nav-link flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="nav-reports">
             <i class="fa-solid fa-chart-pie w-5"></i>
             <span>Reports</span>
@@ -302,8 +306,8 @@
           <div onclick="showSection('invoices'); toggleMobileMenu()" class="flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="mnav-invoices">
             <i class="fa-solid fa-receipt w-5"></i> <span>Invoices</span>
           </div>
-          <div onclick="showSection('reports'); toggleMobileMenu()" class="flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="mnav-reports">
-            <i class="fa-solid fa-chart-pie w-5"></i> <span>Reports</span>
+          <div onclick="showSection('exchanges'); toggleMobileMenu()" class="flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="mnav-exchanges">
+            <i class="fa-solid fa-exchange-alt w-5"></i> <span>Exchanges</span>
           </div>
           <div onclick="showSection('admin'); toggleMobileMenu()" class="flex items-center gap-x-3 px-4 py-3 text-sm font-semibold cursor-pointer hover:bg-slate-100 rounded-2xl" id="mnav-admin">
             <i class="fa-solid fa-user-shield w-5"></i> <span>Admin</span>
@@ -990,9 +994,114 @@
                </div>
             </div>
           </div>
-        </section>
+         </section>
 
-     </main>
+        <!-- EXCHANGES SECTION -->
+        <section id="exchanges" class="section">
+          <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6">
+            <div>
+              <h2 class="text-3xl font-semibold tracking-tight">Exchanges</h2>
+              <p class="text-sm text-slate-500">Manage product returns and replacements</p>
+            </div>
+            <button onclick="showNewExchangeModal()" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-3xl text-sm flex items-center gap-2 shadow-sm">
+              <i class="fa-solid fa-plus"></i>
+              <span>New Exchange</span>
+            </button>
+          </div>
+
+          <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[900px]">
+                <thead>
+                  <tr class="bg-slate-50 text-left">
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500">EXCHANGE #</th>
+                    <th class="px-4 py-4 text-xs font-bold text-slate-500">ORIGINAL INVOICE</th>
+                    <th class="px-4 py-4 text-xs font-bold text-slate-500">DATE</th>
+                    <th class="px-4 py-4 text-xs font-bold text-slate-500">RETURNED</th>
+                    <th class="px-4 py-4 text-xs font-bold text-slate-500">NEW ITEMS</th>
+                    <th class="px-4 py-4 text-xs font-bold text-slate-500 text-right">NET AMOUNT</th>
+                    <th class="px-6 py-4 text-xs font-bold text-slate-500 text-center">ACTIONS</th>
+                  </tr>
+                </thead>
+                <tbody id="exchanges-table" class="text-sm"></tbody>
+              </table>
+            </div>
+          </div>
+         </section>
+
+        <!-- NEW EXCHANGE MODAL -->
+        <div id="exchange-modal" onclick="if (event.target.id === 'exchange-modal') closeExchangeModal()" class="hidden fixed inset-0 bg-black/50 z-[80] flex items-center justify-center p-4">
+          <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-4xl rounded-3xl overflow-hidden shadow-2xl">
+            <div class="px-6 py-5 border-b flex justify-between items-center bg-slate-50">
+              <h3 class="font-semibold text-xl">New Exchange</h3>
+              <button onclick="closeExchangeModal()" class="text-3xl leading-none text-slate-400 hover:text-slate-600">&times;</button>
+            </div>
+
+            <div class="p-6">
+              <!-- Step 1: Select Original Invoice -->
+              <div id="exchange-step-1">
+                <div class="mb-4">
+                  <label class="text-xs font-semibold text-slate-500">Search Original Invoice</label>
+                  <input id="exchange-invoice-search" type="text" placeholder="Invoice ID or Customer name..." 
+                         oninput="searchInvoicesForExchange()" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                  <div id="exchange-invoice-suggestions" class="hidden mt-1 max-h-48 overflow-auto border border-slate-200 rounded-2xl bg-white shadow text-sm"></div>
+                </div>
+
+                <div id="selected-original-invoice" class="hidden bg-slate-50 p-4 rounded-2xl mb-4">
+                  <div class="font-semibold">Selected Invoice: <span id="selected-invoice-id"></span></div>
+                  <div class="text-sm text-slate-600" id="selected-invoice-customer"></div>
+                </div>
+
+                <div id="returnable-items" class="hidden">
+                  <h4 class="font-semibold mb-2">Items to Return</h4>
+                  <div id="return-items-list" class="space-y-2 max-h-48 overflow-auto"></div>
+                </div>
+              </div>
+
+              <!-- Step 2: Add Replacement Items -->
+              <div id="exchange-step-2" class="hidden">
+                <div class="mb-4">
+                  <h4 class="font-semibold mb-2">Replacement Items (New Products)</h4>
+                  <div class="relative">
+                    <input id="exchange-product-search" type="text" placeholder="Search products to add..." 
+                           oninput="searchProductsForExchange()" class="w-full border border-slate-300 px-4 py-2.5 pl-10 rounded-2xl text-sm">
+                    <i class="fa-solid fa-search absolute left-4 top-3 text-slate-400"></i>
+                    <div id="exchange-product-suggestions" class="hidden absolute mt-1 w-full bg-white border border-slate-200 shadow-xl rounded-3xl z-50 max-h-60 overflow-auto"></div>
+                  </div>
+                </div>
+
+                <div id="exchange-new-items" class="border border-slate-200 rounded-2xl min-h-[80px] max-h-48 overflow-auto p-2 mb-4"></div>
+
+                <div class="bg-slate-50 p-4 rounded-2xl">
+                  <div class="flex justify-between text-sm">
+                    <span>Returned Value</span>
+                    <span id="exchange-returned-value" class="font-semibold">₹0.00</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span>New Items Value</span>
+                    <span id="exchange-new-value" class="font-semibold">₹0.00</span>
+                  </div>
+                  <div class="flex justify-between pt-2 border-t mt-2 font-semibold">
+                    <span>Net Amount</span>
+                    <span id="exchange-net-amount" class="font-bold">₹0.00</span>
+                  </div>
+                  <div class="text-xs text-slate-500 mt-1">Positive = Customer pays difference | Negative = Refund/Credit</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="px-6 py-5 border-t bg-slate-50 flex gap-3 justify-between">
+              <button onclick="closeExchangeModal()" class="px-6 py-2.5 border rounded-2xl text-sm font-semibold">Cancel</button>
+              <div class="flex gap-3">
+                <button id="exchange-back-btn" onclick="exchangeGoBack()" class="hidden px-6 py-2.5 border rounded-2xl text-sm font-semibold">Back</button>
+                <button id="exchange-next-btn" onclick="exchangeGoNext()" class="px-6 py-2.5 bg-teal-700 hover:bg-teal-800 text-white rounded-2xl text-sm font-semibold">Next</button>
+                <button id="exchange-confirm-btn" onclick="confirmExchange()" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl text-sm font-semibold">Confirm Exchange</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </main>
    </div>
 
   <!-- Product Modal -->
@@ -1162,18 +1271,21 @@
   <!-- Invoice Detail Modal -->
   <div id="invoice-modal" onclick="if (event.target.id === 'invoice-modal') closeInvoiceModal()" class="hidden fixed inset-0 bg-black/60 z-[80] flex items-center justify-center p-4">
     <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl print-invoice">
-      <div class="px-6 py-4 flex items-center justify-between border-b bg-slate-50 no-print">
-        <div>
-          <span class="font-bold">Invoice</span> 
-          <span id="modal-invoice-id" class="font-mono text-teal-700 font-semibold"></span>
+        <div class="px-6 py-4 flex items-center justify-between border-b bg-slate-50 no-print">
+          <div>
+            <span class="font-bold">Invoice</span> 
+            <span id="modal-invoice-id" class="font-mono text-teal-700 font-semibold"></span>
+          </div>
+          <div class="flex gap-2 items-center">
+            <button onclick="initiateExchangeFromInvoice()" class="px-4 py-1.5 text-xs bg-orange-100 hover:bg-orange-200 text-orange-700 rounded-2xl flex items-center gap-1 font-medium">
+              <i class="fa-solid fa-exchange-alt"></i> <span>Exchange</span>
+            </button>
+            <button onclick="printInvoice()" class="px-5 py-1.5 text-xs bg-white border border-slate-300 rounded-2xl flex items-center gap-2 hover:bg-slate-100">
+              <i class="fa-solid fa-print"></i> <span>Print / PDF</span>
+            </button>
+            <button onclick="closeInvoiceModal()" class="text-2xl leading-none px-2 text-slate-400 hover:text-slate-700">&times;</button>
+          </div>
         </div>
-        <div class="flex gap-2">
-          <button onclick="printInvoice()" class="px-5 py-1.5 text-xs bg-white border border-slate-300 rounded-2xl flex items-center gap-2 hover:bg-slate-100">
-            <i class="fa-solid fa-print"></i> <span>Print / PDF</span>
-          </button>
-          <button onclick="closeInvoiceModal()" class="text-2xl leading-none px-2 text-slate-400 hover:text-slate-700">&times;</button>
-        </div>
-      </div>
 
       <div class="p-7 text-sm" id="invoice-modal-content">
         <!-- Populated by JS -->
@@ -1222,6 +1334,9 @@
     // For printing
     let currentPrintingInvoice = null;
 
+    // Current Exchange being created (temp)
+    let currentExchange = null;
+
     // Admin State
     let isAdmin = false;
 
@@ -1240,10 +1355,14 @@
       gstin: '07AABCU9603R1ZM'
     };
 
+    // Exchanges
+    let exchanges = [];
+
     // Persistence
     function saveData() {
       localStorage.setItem('invbill_products', JSON.stringify(products));
       localStorage.setItem('invbill_invoices', JSON.stringify(invoices));
+      localStorage.setItem('invbill_exchanges', JSON.stringify(exchanges));
     }
 
     function loadData() {
@@ -1252,6 +1371,9 @@
       
       if (savedProducts) products = JSON.parse(savedProducts);
       if (savedInvoices) invoices = JSON.parse(savedInvoices);
+
+      const savedExchanges = localStorage.getItem('invbill_exchanges');
+      if (savedExchanges) exchanges = JSON.parse(savedExchanges);
 
       // Migrate old products - add missing fields
       products.forEach(p => {
@@ -1454,6 +1576,10 @@
 
       if (section === 'admin') {
         showAdminSection();
+      }
+
+      if (section === 'exchanges') {
+        renderExchanges();
       }
 
       // Guard Inventory access
@@ -2816,8 +2942,10 @@
           <td class="px-4 py-4 text-right font-medium">${inv.items.length}</td>
           <td class="px-4 py-4 text-right font-semibold tabular-nums text-emerald-700">${formatCurrency(inv.total)}</td>
           <td class="px-6 py-4">
-            <div class="flex gap-1 justify-center">
+            <div class="flex gap-1 justify-center items-center">
               <button onclick="showInvoiceModalById('${inv.id}')" class="px-3 py-1 text-xs bg-teal-700 hover:bg-teal-800 text-white rounded-2xl">View</button>
+              ${exchanges.some(e => e.originalInvoiceId === inv.id) ? 
+                `<span class="text-[10px] px-1.5 py-0.5 bg-orange-100 text-orange-600 rounded">Exchanged</span>` : ''}
               <button onclick="deleteInvoice('${inv.id}', event)" class="px-2 py-1 text-xs bg-white border text-slate-500 hover:bg-red-50 hover:text-red-600 rounded-2xl">×</button>
             </div>
           </td>
@@ -2896,6 +3024,47 @@
         </div>
 
         <div class="text-[10px] text-center mt-7 text-slate-400">Thank you for your business!</div>
+
+        <!-- Exchange History -->
+        ${(() => {
+          const related = exchanges.filter(e => e.originalInvoiceId === invoice.id);
+          if (related.length === 0) return '';
+
+          let html = `<div class="mt-6 border-t pt-4">`;
+          html += `<div class="font-semibold text-sm mb-2 flex items-center gap-2 text-orange-600">`;
+          html += `<i class="fa-solid fa-exchange-alt"></i> Exchange History`;
+          html += `</div>`;
+
+          related.forEach(exc => {
+            const returned = exc.returnedItems.reduce((s, i) => s + i.qty, 0);
+            const added = exc.newItems.reduce((s, i) => s + i.qty, 0);
+
+            html += `
+              <div class="bg-orange-50 border border-orange-100 p-3 rounded-2xl mb-2 text-xs">
+                <div class="flex justify-between items-start">
+                  <div>
+                    <div class="font-semibold text-orange-700">${exc.id}</div>
+                    <div class="text-orange-600">${exc.date}</div>
+                  </div>
+                  <button onclick="viewExchangeDetails('${exc.id}'); closeInvoiceModal();" 
+                          class="text-orange-600 hover:text-orange-800 text-[10px] px-2 py-0.5 border border-orange-200 rounded">
+                    View
+                  </button>
+                </div>
+                <div class="mt-1.5 text-orange-700">
+                  Returned: <strong>${returned}</strong> item(s) &nbsp;•&nbsp; 
+                  Added: <strong>${added}</strong> item(s)
+                </div>
+                <div class="mt-1 font-semibold ${exc.netAmount >= 0 ? 'text-emerald-700' : 'text-red-600'}">
+                  Net: ${exc.netAmount >= 0 ? '+' : ''}${formatCurrency(exc.netAmount)}
+                </div>
+              </div>
+            `;
+          });
+
+          html += `</div>`;
+          return html;
+        })()}
       `;
 
       modal.classList.remove('hidden');
@@ -3549,6 +3718,39 @@
       });
     }
 
+    function renderExchanges() {
+      const tbody = document.getElementById('exchanges-table');
+      if (!tbody) return;
+      tbody.innerHTML = '';
+
+      if (exchanges.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-12 text-center text-slate-400">No exchanges yet. Create one from an invoice.</td></tr>`;
+        return;
+      }
+
+      exchanges.forEach(exc => {
+        const returnedCount = exc.returnedItems.reduce((s, i) => s + i.qty, 0);
+        const newCount = exc.newItems.reduce((s, i) => s + i.qty, 0);
+
+        const row = document.createElement('tr');
+        row.className = 'border-b hover:bg-slate-50';
+        row.innerHTML = `
+          <td class="px-6 py-4 font-mono text-teal-700 font-semibold">${exc.id}</td>
+          <td class="px-4 py-4"><a href="#" onclick="showInvoiceModalById('${exc.originalInvoiceId}'); return false;" class="text-teal-600 hover:underline">${exc.originalInvoiceId}</a></td>
+          <td class="px-4 py-4 text-sm text-slate-500">${exc.date}</td>
+          <td class="px-4 py-4">${returnedCount} item(s)</td>
+          <td class="px-4 py-4">${newCount} item(s)</td>
+          <td class="px-4 py-4 text-right font-semibold ${exc.netAmount >= 0 ? 'text-emerald-600' : 'text-red-600'}">
+            ${exc.netAmount >= 0 ? '+' : ''}${formatCurrency(exc.netAmount)}
+          </td>
+          <td class="px-6 py-4 text-center">
+            <button onclick="viewExchangeDetails('${exc.id}')" class="px-3 py-1 text-xs bg-white border rounded-2xl">View</button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    }
+
     function renderLowStockReport() {
       const container = document.getElementById('report-lowstock-list');
       container.innerHTML = '';
@@ -3639,6 +3841,330 @@
           }
         }
       }, 180);
+    }
+
+    // ==================== EXCHANGE SYSTEM ====================
+
+    function showNewExchangeModal() {
+      currentExchange = {
+        returnedItems: [],
+        newItems: []
+      };
+
+      document.getElementById('exchange-invoice-search').value = '';
+      document.getElementById('exchange-invoice-suggestions').classList.add('hidden');
+      document.getElementById('selected-original-invoice').classList.add('hidden');
+      document.getElementById('returnable-items').classList.add('hidden');
+      document.getElementById('exchange-step-2').classList.add('hidden');
+      document.getElementById('exchange-step-1').classList.remove('hidden');
+
+      document.getElementById('exchange-back-btn').classList.add('hidden');
+      document.getElementById('exchange-next-btn').classList.remove('hidden');
+      document.getElementById('exchange-confirm-btn').classList.add('hidden');
+
+      document.getElementById('exchange-modal').classList.remove('hidden');
+      document.getElementById('exchange-modal').classList.add('flex');
+    }
+
+    function closeExchangeModal() {
+      document.getElementById('exchange-modal').classList.add('hidden');
+      document.getElementById('exchange-modal').classList.remove('flex');
+      currentExchange = null;
+    }
+
+    function searchInvoicesForExchange() {
+      const input = document.getElementById('exchange-invoice-search').value.toLowerCase().trim();
+      const container = document.getElementById('exchange-invoice-suggestions');
+
+      if (!input) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      const matches = invoices.filter(inv => 
+        inv.id.toLowerCase().includes(input) || 
+        (inv.customerName || '').toLowerCase().includes(input)
+      ).slice(0, 6);
+
+      container.innerHTML = '';
+
+      if (matches.length === 0) {
+        container.innerHTML = `<div class="p-3 text-sm text-slate-500">No matching invoices.</div>`;
+        container.classList.remove('hidden');
+        return;
+      }
+
+      matches.forEach(inv => {
+        const div = document.createElement('div');
+        div.className = 'px-4 py-3 hover:bg-teal-50 cursor-pointer border-b last:border-none text-sm';
+        div.innerHTML = `
+          <div class="font-mono text-teal-700">${inv.id}</div>
+          <div class="text-xs">${inv.customerName} • ${inv.date} • ₹${inv.total}</div>
+        `;
+        div.onclick = () => selectInvoiceForExchange(inv.id);
+        container.appendChild(div);
+      });
+
+      container.classList.remove('hidden');
+    }
+
+    function selectInvoiceForExchange(invoiceId) {
+      const invoice = invoices.find(i => i.id === invoiceId);
+      if (!invoice) return;
+
+      document.getElementById('exchange-invoice-suggestions').classList.add('hidden');
+      document.getElementById('exchange-invoice-search').value = invoice.id;
+
+      currentExchange.originalInvoiceId = invoice.id;
+      currentExchange.originalInvoice = invoice;
+
+      document.getElementById('selected-invoice-id').textContent = invoice.id;
+      document.getElementById('selected-invoice-customer').textContent = `${invoice.customerName} • ${invoice.date}`;
+
+      document.getElementById('selected-original-invoice').classList.remove('hidden');
+      document.getElementById('returnable-items').classList.remove('hidden');
+
+      renderReturnableItems();
+    }
+
+    function renderReturnableItems() {
+      const container = document.getElementById('return-items-list');
+      container.innerHTML = '';
+
+      const invoice = currentExchange.originalInvoice;
+
+      invoice.items.forEach((item, idx) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between bg-white p-3 rounded-2xl border';
+        div.innerHTML = `
+          <div>
+            <div class="font-medium">${item.name}</div>
+            <div class="text-xs text-slate-500">₹${item.price} × ${item.qty}</div>
+          </div>
+          <div class="flex items-center gap-2">
+            <input type="number" min="0" max="${item.qty}" value="0" 
+                   class="w-14 border text-center rounded-xl py-1 text-sm" 
+                   onchange="updateReturnQty(${idx}, this.value)">
+            <span class="text-xs text-slate-400">/ ${item.qty}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateReturnQty(itemIndex, qty) {
+      const invoice = currentExchange.originalInvoice;
+      const item = invoice.items[itemIndex];
+      const returnQty = Math.min(parseInt(qty) || 0, item.qty);
+
+      // Update or add to returnedItems
+      let existing = currentExchange.returnedItems.findIndex(r => r.productId === item.productId);
+      if (existing > -1) {
+        if (returnQty > 0) {
+          currentExchange.returnedItems[existing].qty = returnQty;
+        } else {
+          currentExchange.returnedItems.splice(existing, 1);
+        }
+      } else if (returnQty > 0) {
+        currentExchange.returnedItems.push({
+          productId: item.productId,
+          name: item.name,
+          qty: returnQty,
+          price: item.price
+        });
+      }
+    }
+
+    function searchProductsForExchange() {
+      const input = document.getElementById('exchange-product-search').value.toLowerCase().trim();
+      const container = document.getElementById('exchange-product-suggestions');
+
+      if (!input) {
+        container.classList.add('hidden');
+        return;
+      }
+
+      const matches = products.filter(p => p.stock > 0 && 
+        (p.name.toLowerCase().includes(input) || p.sku.toLowerCase().includes(input))
+      ).slice(0, 6);
+
+      container.innerHTML = '';
+
+      matches.forEach(product => {
+        const div = document.createElement('div');
+        div.className = 'px-4 py-2 hover:bg-teal-50 cursor-pointer flex justify-between text-sm border-b last:border-none';
+        div.innerHTML = `
+          <div>${product.name} <span class="text-xs text-slate-400">(${product.sku})</span></div>
+          <div class="font-semibold">₹${product.price}</div>
+        `;
+        div.onclick = () => addProductToExchange(product);
+        container.appendChild(div);
+      });
+
+      container.classList.remove('hidden');
+    }
+
+    function addProductToExchange(product) {
+      document.getElementById('exchange-product-suggestions').classList.add('hidden');
+      document.getElementById('exchange-product-search').value = '';
+
+      const existing = currentExchange.newItems.findIndex(i => i.productId === product.id);
+      if (existing > -1) {
+        currentExchange.newItems[existing].qty++;
+      } else {
+        currentExchange.newItems.push({
+          productId: product.id,
+          name: product.name,
+          qty: 1,
+          price: product.price
+        });
+      }
+
+      renderExchangeNewItems();
+      calculateExchangeTotals();
+    }
+
+    function renderExchangeNewItems() {
+      const container = document.getElementById('exchange-new-items');
+      container.innerHTML = '';
+
+      if (currentExchange.newItems.length === 0) {
+        container.innerHTML = `<div class="p-4 text-center text-slate-400 text-sm">No replacement items added yet.</div>`;
+        return;
+      }
+
+      currentExchange.newItems.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'flex items-center justify-between px-3 py-2 border-b last:border-none';
+        div.innerHTML = `
+          <div class="flex-1">${item.name} × ${item.qty}</div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeExchangeNewQty(${index}, -1)" class="px-2 text-lg">-</button>
+            <span class="w-8 text-center">${item.qty}</span>
+            <button onclick="changeExchangeNewQty(${index}, 1)" class="px-2 text-lg">+</button>
+            <button onclick="removeExchangeNewItem(${index})" class="text-red-400 px-2">×</button>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function changeExchangeNewQty(index, delta) {
+      currentExchange.newItems[index].qty = Math.max(1, currentExchange.newItems[index].qty + delta);
+      renderExchangeNewItems();
+      calculateExchangeTotals();
+    }
+
+    function removeExchangeNewItem(index) {
+      currentExchange.newItems.splice(index, 1);
+      renderExchangeNewItems();
+      calculateExchangeTotals();
+    }
+
+    function calculateExchangeTotals() {
+      let returnedValue = currentExchange.returnedItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
+      let newValue = currentExchange.newItems.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+      currentExchange.netAmount = newValue - returnedValue;
+
+      document.getElementById('exchange-returned-value').textContent = formatCurrency(returnedValue);
+      document.getElementById('exchange-new-value').textContent = formatCurrency(newValue);
+      document.getElementById('exchange-net-amount').textContent = formatCurrency(currentExchange.netAmount);
+    }
+
+    function exchangeGoNext() {
+      if (!currentExchange.originalInvoiceId || currentExchange.returnedItems.length === 0) {
+        alert('Please select an invoice and at least one item to return.');
+        return;
+      }
+
+      document.getElementById('exchange-step-1').classList.add('hidden');
+      document.getElementById('exchange-step-2').classList.remove('hidden');
+      document.getElementById('exchange-back-btn').classList.remove('hidden');
+      document.getElementById('exchange-next-btn').classList.add('hidden');
+      document.getElementById('exchange-confirm-btn').classList.remove('hidden');
+
+      calculateExchangeTotals();
+    }
+
+    function exchangeGoBack() {
+      document.getElementById('exchange-step-2').classList.add('hidden');
+      document.getElementById('exchange-step-1').classList.remove('hidden');
+      document.getElementById('exchange-back-btn').classList.add('hidden');
+      document.getElementById('exchange-next-btn').classList.remove('hidden');
+      document.getElementById('exchange-confirm-btn').classList.add('hidden');
+    }
+
+    function confirmExchange() {
+      if (currentExchange.newItems.length === 0) {
+        alert('Please add at least one replacement item.');
+        return;
+      }
+
+      const invoice = currentExchange.originalInvoice;
+
+      // Update stock
+      currentExchange.returnedItems.forEach(item => {
+        const prod = products.find(p => p.id === item.productId);
+        if (prod) prod.stock += item.qty;
+      });
+
+      currentExchange.newItems.forEach(item => {
+        const prod = products.find(p => p.id === item.productId);
+        if (prod) prod.stock -= item.qty;
+      });
+
+      // Create exchange record
+      const exchangeRecord = {
+        id: 'EXC-' + Date.now().toString().slice(-6),
+        date: getTodayDate(),
+        originalInvoiceId: currentExchange.originalInvoiceId,
+        returnedItems: [...currentExchange.returnedItems],
+        newItems: [...currentExchange.newItems],
+        netAmount: currentExchange.netAmount,
+        status: 'completed'
+      };
+
+      exchanges.unshift(exchangeRecord);
+
+      // Optional: Mark items in original invoice (simplified)
+      if (!invoice.exchangedItems) invoice.exchangedItems = [];
+      currentExchange.returnedItems.forEach(item => {
+        invoice.exchangedItems.push(item);
+      });
+
+      saveData();
+
+      closeExchangeModal();
+      renderExchanges();
+      renderDashboard();
+      renderInventory();
+
+      showToast(`Exchange ${exchangeRecord.id} created successfully!`);
+    }
+
+    function viewExchangeDetails(exchangeId) {
+      const exc = exchanges.find(e => e.id === exchangeId);
+      if (!exc) return;
+
+      alert(`Exchange ${exc.id}\nOriginal: ${exc.originalInvoiceId}\nNet: ₹${exc.netAmount}\n\n(Full details modal can be expanded later)`);
+    }
+
+    function initiateExchangeFromInvoice() {
+      const invoiceId = document.getElementById('modal-invoice-id').textContent;
+      closeInvoiceModal();
+
+      setTimeout(() => {
+        showNewExchangeModal();
+
+        // Auto-select the current invoice after modal opens
+        setTimeout(() => {
+          const inv = invoices.find(i => i.id === invoiceId);
+          if (inv) {
+            selectInvoiceForExchange(inv.id);
+          }
+        }, 300);
+      }, 200);
     }
 
     // ==================== ADMIN SYSTEM ====================
@@ -3813,6 +4339,7 @@
       populateReportCategoryFilter();
       renderDashboard();
       renderInvoices();
+      renderExchanges();
 
       // Initialize enhanced inventory (default table view)
       setInventoryView('table');
