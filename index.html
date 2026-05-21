@@ -844,6 +844,44 @@
            <h4 class="font-semibold mb-4">Top Performing Products</h4>
            <div id="report-top-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 text-sm"></div>
          </div>
+
+         <!-- Profit Margin Reports -->
+         <div class="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
+           <div class="bg-white border border-slate-200 rounded-3xl p-6">
+             <h4 class="font-semibold mb-4 flex items-center gap-2 text-emerald-700">
+               <i class="fa-solid fa-chart-line"></i> Profit Margin Analysis
+             </h4>
+             <div class="grid grid-cols-2 gap-4 mb-4">
+               <div class="bg-emerald-50 p-4 rounded-2xl">
+                 <div class="text-xs text-emerald-600">TOTAL GROSS PROFIT</div>
+                 <div id="report-total-profit" class="font-display text-3xl font-semibold text-emerald-700">₹0</div>
+               </div>
+               <div class="bg-emerald-50 p-4 rounded-2xl">
+                 <div class="text-xs text-emerald-600">OVERALL MARGIN</div>
+                 <div id="report-overall-margin" class="font-display text-3xl font-semibold text-emerald-700">0%</div>
+               </div>
+             </div>
+             <div id="report-profit-by-product" class="space-y-2 text-sm max-h-[240px] overflow-auto custom-scroll"></div>
+           </div>
+
+           <!-- Low Stock / Inventory Alerts -->
+           <div class="bg-white border border-slate-200 rounded-3xl p-6">
+             <h4 class="font-semibold mb-4 flex items-center gap-2 text-orange-600">
+               <i class="fa-solid fa-exclamation-triangle"></i> Inventory Health - Low Stock Alerts
+             </h4>
+             <div class="grid grid-cols-2 gap-4 mb-4">
+               <div class="bg-orange-50 p-4 rounded-2xl">
+                 <div class="text-xs text-orange-600">LOW STOCK ITEMS</div>
+                 <div id="report-lowstock-count" class="font-display text-3xl font-semibold text-orange-700">0</div>
+               </div>
+               <div class="bg-orange-50 p-4 rounded-2xl">
+                 <div class="text-xs text-orange-600">VALUE AT RISK</div>
+                 <div id="report-at-risk-value" class="font-display text-3xl font-semibold text-orange-700">₹0</div>
+               </div>
+             </div>
+             <div id="report-lowstock-list" class="space-y-2 text-sm max-h-[240px] overflow-auto custom-scroll"></div>
+           </div>
+         </div>
        </section>
     </main>
   </div>
@@ -1148,51 +1186,61 @@
     }
 
     function seedData() {
-      if (products.length > 0) return;
+      let seeded = false;
 
-      products = [
-        { id: 'p1', sku: 'ELC-001', name: 'Wireless Earbuds', category: 'Electronics', barcode: '8901234567890', costPrice: 32, mrp: 69, price: 49.99, stock: 32, minStock: 10, unit: 'pcs' },
-        { id: 'p2', sku: 'ELC-002', name: 'USB-C Cable (2m)', category: 'Electronics', barcode: '8901234567906', costPrice: 6, mrp: 19, price: 12.50, stock: 87, minStock: 25, unit: 'pcs' },
-        { id: 'p3', sku: 'HME-101', name: 'Ceramic Coffee Mug', category: 'Home & Kitchen', costPrice: 4.5, mrp: 15, price: 8.99, stock: 4, minStock: 15, unit: 'pcs' },
-        { id: 'p4', sku: 'STN-045', name: 'A5 Notebook (Pack of 3)', category: 'Stationery', barcode: '8901234567913', costPrice: 3.2, mrp: 12, price: 6.75, stock: 120, minStock: 40, unit: 'pack' },
-        { id: 'p5', sku: 'ELC-015', name: 'Portable Power Bank 20000mAh', category: 'Electronics', costPrice: 18, mrp: 45, price: 29.99, stock: 19, minStock: 8, unit: 'pcs' },
-        { id: 'p6', sku: 'HME-210', name: 'Stainless Steel Water Bottle', category: 'Home & Kitchen', costPrice: 8, mrp: 25, price: 14.50, stock: 27, minStock: 12, unit: 'pcs' },
-        { id: 'p7', sku: 'GRY-007', name: 'Organic Almonds 500g', category: 'Groceries', barcode: '8901234567920', costPrice: 4.5, mrp: 12, price: 7.25, stock: 53, minStock: 20, unit: 'pcs' },
-        { id: 'p8', sku: 'STN-009', name: 'Ballpoint Pen Set (12 pcs)', category: 'Stationery', costPrice: 2.2, mrp: 9, price: 4.99, stock: 9, minStock: 30, unit: 'pack' }
-      ];
+      if (products.length === 0) {
+        products = [
+          { id: 'p1', sku: 'ELC-001', name: 'Wireless Earbuds', category: 'Electronics', barcode: '8901234567890', costPrice: 32, mrp: 69, price: 49.99, stock: 32, minStock: 10, unit: 'pcs' },
+          { id: 'p2', sku: 'ELC-002', name: 'USB-C Cable (2m)', category: 'Electronics', barcode: '8901234567906', costPrice: 6, mrp: 19, price: 12.50, stock: 87, minStock: 25, unit: 'pcs' },
+          { id: 'p3', sku: 'HME-101', name: 'Ceramic Coffee Mug', category: 'Home & Kitchen', costPrice: 4.5, mrp: 15, price: 8.99, stock: 4, minStock: 15, unit: 'pcs' },
+          { id: 'p4', sku: 'STN-045', name: 'A5 Notebook (Pack of 3)', category: 'Stationery', barcode: '8901234567913', costPrice: 3.2, mrp: 12, price: 6.75, stock: 120, minStock: 40, unit: 'pack' },
+          { id: 'p5', sku: 'ELC-015', name: 'Portable Power Bank 20000mAh', category: 'Electronics', costPrice: 18, mrp: 45, price: 29.99, stock: 19, minStock: 8, unit: 'pcs' },
+          { id: 'p6', sku: 'HME-210', name: 'Stainless Steel Water Bottle', category: 'Home & Kitchen', costPrice: 8, mrp: 25, price: 14.50, stock: 27, minStock: 12, unit: 'pcs' },
+          { id: 'p7', sku: 'GRY-007', name: 'Organic Almonds 500g', category: 'Groceries', barcode: '8901234567920', costPrice: 4.5, mrp: 12, price: 7.25, stock: 53, minStock: 20, unit: 'pcs' },
+          { id: 'p8', sku: 'STN-009', name: 'Ballpoint Pen Set (12 pcs)', category: 'Stationery', costPrice: 2.2, mrp: 9, price: 4.99, stock: 9, minStock: 30, unit: 'pack' }
+        ];
+        seeded = true;
+      }
 
-      invoices = [
-        {
-          id: 'INV-1001',
-          date: '2026-05-15',
-          customerName: 'Sarah Patel',
-          customerPhone: '9876543210',
-          items: [
-            { productId: 'p1', name: 'Wireless Earbuds', qty: 1, price: 49.99 },
-            { productId: 'p2', name: 'USB-C Cable (2m)', qty: 3, price: 12.50 }
-          ],
-          subtotal: 87.49,
-          tax: 15.75,
-          discount: 0,
-          total: 103.24
-        },
-        {
-          id: 'INV-1002',
-          date: '2026-05-18',
-          customerName: 'Michael Torres',
-          customerPhone: '9123456789',
-          items: [
-            { productId: 'p4', name: 'A5 Notebook (Pack of 3)', qty: 5, price: 6.75 },
-            { productId: 'p8', name: 'Ballpoint Pen Set (12 pcs)', qty: 2, price: 4.99 }
-          ],
-          subtotal: 43.73,
-          tax: 7.87,
-          discount: 5,
-          total: 46.60
-        }
-      ];
+      if (invoices.length === 0) {
+        invoices = [
+          {
+            id: 'INV-1001',
+            date: '2026-05-15',
+            customerName: 'Sarah Patel',
+            customerPhone: '9876543210',
+            items: [
+              { productId: 'p1', name: 'Wireless Earbuds', qty: 1, price: 49.99 },
+              { productId: 'p2', name: 'USB-C Cable (2m)', qty: 3, price: 12.50 }
+            ],
+            subtotal: 87.49,
+            tax: 15.75,
+            discount: 0,
+            total: 103.24,
+            paymentMethod: 'cash'
+          },
+          {
+            id: 'INV-1002',
+            date: '2026-05-18',
+            customerName: 'Michael Torres',
+            customerPhone: '9123456789',
+            items: [
+              { productId: 'p4', name: 'A5 Notebook (Pack of 3)', qty: 5, price: 6.75 },
+              { productId: 'p8', name: 'Ballpoint Pen Set (12 pcs)', qty: 2, price: 4.99 }
+            ],
+            subtotal: 43.73,
+            tax: 7.87,
+            discount: 5,
+            total: 46.60,
+            paymentMethod: 'card'
+          }
+        ];
+        seeded = true;
+      }
       
-      saveData();
+      if (seeded) {
+        saveData();
+      }
     }
 
     function resetDemoData() {
@@ -3095,6 +3143,12 @@
 
       // === Top Products ===
       renderTopProductsReport(filteredInvoices);
+
+      // === Profit Margin Reports ===
+      renderProfitMarginReport(filteredInvoices);
+
+      // === Low Stock / Inventory Alerts ===
+      renderLowStockReport();
     }
 
     function renderCategoryWiseReport(filteredInvoices, grandTotal) {
@@ -3296,6 +3350,187 @@
       a.download = `reports_${new Date().toISOString().slice(0,10)}.csv`;
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    function renderProfitMarginReport(filteredInvoices) {
+      let totalProfit = 0;
+      let totalRevenueFromSold = 0;
+      const productProfit = {};
+
+      filteredInvoices.forEach(inv => {
+        inv.items.forEach(item => {
+          const prod = products.find(p => p.id === item.productId);
+          if (!prod) return;
+
+          const qty = item.qty || 0;
+          const sellingPrice = item.price || 0;
+          const cost = prod.costPrice || 0;
+
+          const lineRevenue = sellingPrice * qty;
+          const lineCost = cost * qty;
+          const lineProfit = lineRevenue - lineCost;
+
+          totalProfit += lineProfit;
+          totalRevenueFromSold += lineRevenue;
+
+          const key = prod.name;
+          if (!productProfit[key]) {
+            productProfit[key] = { profit: 0, revenue: 0, qty: 0 };
+          }
+          productProfit[key].profit += lineProfit;
+          productProfit[key].revenue += lineRevenue;
+          productProfit[key].qty += qty;
+        });
+      });
+
+      // Update KPI cards
+      document.getElementById('report-total-profit').textContent = formatCurrency(totalProfit);
+      const overallMargin = totalRevenueFromSold > 0 ? Math.round((totalProfit / totalRevenueFromSold) * 100) : 0;
+      document.getElementById('report-overall-margin').textContent = `${overallMargin}%`;
+
+      // Product level profit table
+      const container = document.getElementById('report-profit-by-product');
+      container.innerHTML = '';
+
+      const sorted = Object.entries(productProfit)
+        .sort((a, b) => b[1].profit - a[1].profit)
+        .slice(0, 6);
+
+      if (sorted.length === 0) {
+        container.innerHTML = `<div class="text-sm text-slate-400 py-4">No sales data for profit calculation</div>`;
+        return;
+      }
+
+      sorted.forEach(([name, data]) => {
+        const margin = data.revenue > 0 ? Math.round((data.profit / data.revenue) * 100) : 0;
+        const div = document.createElement('div');
+        div.className = 'flex justify-between items-center bg-emerald-50 p-3 rounded-2xl';
+        div.innerHTML = `
+          <div>
+            <div class="font-semibold">${name}</div>
+            <div class="text-xs text-slate-500">${data.qty} sold</div>
+          </div>
+          <div class="text-right">
+            <div class="font-semibold text-emerald-700 tabular-nums">${formatCurrency(data.profit)}</div>
+            <div class="text-xs text-emerald-600">${margin}% margin</div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function renderLowStockReport() {
+      const container = document.getElementById('report-lowstock-list');
+      container.innerHTML = '';
+
+      const categoryFilter = document.getElementById('report-category')?.value || '';
+
+      let lowStockProducts = products.filter(p => p.stock <= (p.minStock || 5));
+
+      if (categoryFilter) {
+        lowStockProducts = lowStockProducts.filter(p => p.category === categoryFilter);
+      }
+
+      // Update KPIs
+      document.getElementById('report-lowstock-count').textContent = lowStockProducts.length;
+
+      const valueAtRisk = lowStockProducts.reduce((sum, p) => {
+        return sum + (p.stock * (p.costPrice || p.price || 0));
+      }, 0);
+      document.getElementById('report-at-risk-value').textContent = formatCurrency(valueAtRisk);
+
+      // Show filtered count
+      const countNote = document.createElement('div');
+      countNote.className = 'text-xs text-orange-600 mb-2 font-medium';
+      countNote.textContent = `Showing ${lowStockProducts.length} low stock item${lowStockProducts.length !== 1 ? 's' : ''} (after filters)`;
+      container.appendChild(countNote);
+
+      if (lowStockProducts.length === 0) {
+        container.innerHTML = `<div class="text-sm text-emerald-600 py-4">✓ All stock levels are healthy</div>`;
+        return;
+      }
+
+          lowStockProducts
+        .sort((a, b) => (a.stock - (a.minStock || 0)) - (b.stock - (b.minStock || 0)))
+        .slice(0, 8)
+        .forEach(prod => {
+          const shortfall = Math.max(0, (prod.minStock || 5) - prod.stock);
+          const riskValue = prod.stock * (prod.costPrice || prod.price || 0);
+
+          const div = document.createElement('div');
+          div.className = 'flex justify-between items-center bg-orange-50 p-3 rounded-2xl cursor-pointer hover:bg-orange-100 active:bg-orange-200 transition-colors';
+          div.onclick = (e) => {
+            if (!e.target.closest('button')) {
+              jumpToInventory(prod.name);
+            }
+          };
+          div.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="font-semibold">${prod.name}</div>
+              <div class="text-xs text-orange-600">${prod.category}</div>
+            </div>
+            <div class="text-right text-sm ml-3">
+              <div><span class="font-semibold text-orange-700">${prod.stock}</span> / ${prod.minStock || 5}</div>
+              <div class="text-xs text-slate-500">Risk: ${formatCurrency(riskValue)}</div>
+            </div>
+            <div class="flex flex-col items-end gap-1 ml-3">
+              <button onclick="event.stopImmediatePropagation(); adjustStock('${prod.id}')" 
+                      class="text-xs px-2.5 py-1 bg-orange-200 hover:bg-orange-300 text-orange-700 rounded-xl font-semibold transition">
+                Restock
+              </button>
+              <div class="text-orange-500">
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </div>
+            </div>
+          `;
+          container.appendChild(div);
+        });
+    }
+
+    function jumpToInventory(productName) {
+      showSection('inventory');
+      
+      // Small delay to ensure inventory section is visible
+      setTimeout(() => {
+        const searchInput = document.getElementById('inventory-search');
+        if (searchInput) {
+          searchInput.value = productName;
+          filterInventory();
+          
+          // Highlight the product row temporarily
+          setTimeout(() => {
+            highlightProductInInventory(productName);
+          }, 120);
+          
+          // Scroll to inventory
+          const inventorySection = document.getElementById('inventory');
+          if (inventorySection) {
+            inventorySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+        }
+      }, 180);
+    }
+
+    function highlightProductInInventory(productName) {
+      const tbody = document.getElementById('inventory-table');
+      if (!tbody) return;
+
+      const rows = tbody.querySelectorAll('tr');
+      
+      rows.forEach(row => {
+        if (row.textContent.includes(productName)) {
+          // Add strong highlight
+          row.classList.add('!bg-yellow-200', 'ring-2', 'ring-yellow-500', 'ring-inset');
+          
+          // Scroll the row into view within the table
+          row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          
+          // Remove highlight after 4.5 seconds
+          setTimeout(() => {
+            row.classList.remove('!bg-yellow-200', 'ring-2', 'ring-yellow-500', 'ring-inset');
+          }, 4500);
+        }
+      });
     }
 
     // Initialize everything
