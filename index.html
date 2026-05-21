@@ -27,6 +27,12 @@
     }
     .section.active {
       display: block;
+      animation: fadeIn 0.15s ease forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .nav-link {
@@ -157,6 +163,18 @@
 
     .custom-scroll {
       scrollbar-width: thin;
+    }
+
+    /* Better mobile experience */
+    button, .nav-link, input, select {
+      touch-action: manipulation;
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+      }
     }
   </style>
 </head>
@@ -547,21 +565,21 @@
 
        <!-- BILLING / POS TERMINAL (ENHANCED) -->
        <section id="billing" class="section">
-         <div class="mb-4 flex items-center justify-between">
-           <div>
-             <h2 class="text-3xl font-semibold tracking-tight">POS Terminal</h2>
-             <p class="text-sm text-slate-500">Fast billing • Touch friendly</p>
-           </div>
-           
-           <!-- Hold / Recall + Barcode Scanner -->
-           <div class="flex items-center gap-2 flex-wrap">
-             <!-- Barcode Scanner -->
-             <div class="flex items-center bg-white border border-slate-300 rounded-3xl px-3 py-1.5 text-sm">
-               <i class="fa-solid fa-barcode text-slate-400 mr-2"></i>
-               <input id="barcode-input" type="text" placeholder="Scan barcode / SKU" 
-                      class="w-44 bg-transparent outline-none text-sm"
-                      onkeypress="if (event.key === 'Enter') scanBarcode()">
-             </div>
+          <div class="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h2 class="text-3xl font-semibold tracking-tight">POS Terminal</h2>
+              <p class="text-sm text-slate-500">Fast billing • Touch friendly</p>
+            </div>
+            
+            <!-- Hold / Recall + Barcode Scanner -->
+            <div class="flex items-center gap-2 flex-wrap">
+              <!-- Barcode Scanner -->
+              <div class="flex items-center bg-white border border-slate-300 rounded-3xl px-3 py-1.5 text-sm flex-1 sm:flex-none max-w-[220px]">
+                <i class="fa-solid fa-barcode text-slate-400 mr-2"></i>
+                <input id="barcode-input" type="text" placeholder="Scan / SKU" 
+                       class="flex-1 bg-transparent outline-none text-sm min-w-0"
+                       onkeypress="if (event.key === 'Enter') scanBarcode()">
+              </div>
 
              <!-- Hold Buttons -->
              <button onclick="holdCurrentCart()" class="px-4 py-2 text-xs font-semibold bg-amber-100 hover:bg-amber-200 text-amber-700 rounded-3xl flex items-center gap-1">
@@ -616,7 +634,7 @@
            </div>
 
            <!-- RIGHT: CART + PAYMENT (POS Style) -->
-           <div class="xl:col-span-5 bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col overflow-hidden" style="min-height: 620px;">
+            <div class="xl:col-span-5 bg-white border border-slate-200 rounded-3xl shadow-sm flex flex-col overflow-hidden min-h-[480px] xl:min-h-[620px]">
              
              <!-- Cart Header -->
              <div class="px-5 pt-4 pb-2 flex justify-between items-center border-b bg-slate-50">
@@ -755,7 +773,7 @@
            </div>
 
            <!-- Advanced Filters -->
-           <div class="bg-white border border-slate-200 rounded-3xl p-4 flex flex-wrap gap-3 items-end shadow-sm">
+           <div class="bg-white border border-slate-200 rounded-3xl p-3 sm:p-4 flex flex-wrap gap-2 sm:gap-3 items-end shadow-sm w-full">
              <div>
                <label class="text-xs font-semibold text-slate-500 block mb-1">From</label>
                <input type="date" id="report-from" class="border border-slate-300 rounded-2xl px-3 py-1.5 text-sm">
@@ -892,7 +910,7 @@
         </section>
 
         <!-- ADMIN SECTION -->
-        <section id="admin" class="section">
+        <section id="admin" class="section px-2">
           <div class="max-w-md mx-auto">
             <div class="bg-white border border-slate-200 rounded-3xl p-8 shadow-sm">
               <div class="text-center mb-6">
@@ -905,14 +923,14 @@
 
               <!-- Login Form -->
               <div id="admin-login-form">
-                <div class="space-y-4">
+                <div class="space-y-3 sm:space-y-4">
                   <div>
                     <label class="text-xs font-semibold text-slate-500">Username</label>
-                    <input id="admin-username" type="text" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                    <input id="admin-username" type="text" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
                   </div>
                   <div>
                     <label class="text-xs font-semibold text-slate-500">Password</label>
-                    <input id="admin-password" type="password" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                    <input id="admin-password" type="password" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
                   </div>
                   <button onclick="loginAsAdmin()" class="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-3xl text-sm mt-2">
                     Login as Admin
@@ -979,42 +997,42 @@
 
   <!-- Product Modal -->
   <div id="product-modal" onclick="if (event.target.id === 'product-modal') closeProductModal()" class="hidden fixed inset-0 bg-black/50 z-[70] flex items-center justify-center p-4">
-    <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-2xl rounded-3xl overflow-hidden shadow-2xl">
-      <div class="px-6 py-5 border-b flex justify-between items-center bg-slate-50">
+    <div onclick="event.stopImmediatePropagation()" class="modal bg-white w-full max-w-lg sm:max-w-xl lg:max-w-2xl rounded-3xl overflow-hidden shadow-2xl">
+      <div class="px-4 sm:px-6 py-4 sm:py-5 border-b flex justify-between items-center bg-slate-50">
         <h3 id="product-modal-title" class="font-semibold text-xl">Add Product</h3>
         <button onclick="closeProductModal()" class="text-3xl leading-none text-slate-400 hover:text-slate-600">&times;</button>
       </div>
       
-      <div class="p-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+      <div class="p-4 sm:p-6">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-x-4 sm:gap-x-6 gap-y-3 sm:gap-y-4">
           
           <!-- Left Column -->
-          <div class="space-y-4">
+          <div class="space-y-3 sm:space-y-4">
             <div>
               <label class="text-xs font-semibold text-slate-500">Product Name *</label>
-              <input id="prod-name" type="text" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+              <input id="prod-name" type="text" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label class="text-xs font-semibold text-slate-500">SKU *</label>
-                <input id="prod-sku" type="text" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <input id="prod-sku" type="text" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-500">Category</label>
-                <input id="prod-category" type="text" list="category-list" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <input id="prod-category" type="text" list="category-list" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
                 <datalist id="category-list"></datalist>
               </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label class="text-xs font-semibold text-slate-500">Barcode</label>
-                <input id="prod-barcode" type="text" placeholder="Optional" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <input id="prod-barcode" type="text" placeholder="Optional" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-500">Unit</label>
-                <select id="prod-unit" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <select id="prod-unit" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
                   <option value="pcs">Pieces (pcs)</option>
                   <option value="kg">Kilogram (kg)</option>
                   <option value="g">Gram (g)</option>
@@ -1033,11 +1051,11 @@
           </div>
 
           <!-- Right Column - Pricing & Image -->
-          <div class="space-y-4">
+          <div class="space-y-3 sm:space-y-4">
             <!-- Pricing Section -->
             <div>
               <div class="text-xs font-semibold text-slate-500 mb-1.5">PRICING</div>
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-3 sm:grid-cols-3 gap-2 sm:gap-3">
                 <div>
                   <label class="text-[10px] text-slate-500">Cost Price</label>
                   <div class="relative">
@@ -1063,14 +1081,14 @@
             </div>
 
             <!-- Stock -->
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-2 gap-3 sm:gap-4">
               <div>
                 <label class="text-xs font-semibold text-slate-500">Stock Quantity</label>
-                <input id="prod-stock" type="number" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <input id="prod-stock" type="number" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
               </div>
               <div>
                 <label class="text-xs font-semibold text-slate-500">Min Stock Alert</label>
-                <input id="prod-minstock" type="number" value="5" class="mt-1 w-full border border-slate-300 px-4 py-2.5 rounded-2xl text-sm">
+                <input id="prod-minstock" type="number" value="5" class="mt-1 w-full border border-slate-300 px-3 sm:px-4 py-2 sm:py-2.5 rounded-2xl text-sm">
               </div>
             </div>
 
@@ -1098,9 +1116,9 @@
         </div>
       </div>
       
-      <div class="px-6 py-5 border-t bg-slate-50 flex gap-3">
-        <button onclick="closeProductModal()" class="flex-1 py-3 text-sm border rounded-2xl font-semibold hover:bg-white">Cancel</button>
-        <button id="product-save-btn" onclick="saveProduct()" class="flex-1 py-3 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-2xl text-sm">Save Product</button>
+      <div class="px-4 sm:px-6 py-4 sm:py-5 border-t bg-slate-50 flex gap-3">
+        <button onclick="closeProductModal()" class="flex-1 py-2.5 sm:py-3 text-sm border rounded-2xl font-semibold hover:bg-white">Cancel</button>
+        <button id="product-save-btn" onclick="saveProduct()" class="flex-1 py-2.5 sm:py-3 bg-teal-700 hover:bg-teal-800 text-white font-semibold rounded-2xl text-sm">Save Product</button>
       </div>
     </div>
   </div>
