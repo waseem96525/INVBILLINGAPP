@@ -126,3 +126,69 @@ I can help you with the frontend integration in the next step if needed (replaci
 - Invoice IDs auto-generated as `INV-YYYYMMDD-XXX`
 
 Built for the original InvBill frontend.
+
+---
+
+## Deployment (GitHub + Vercel or other platforms)
+
+### Important Reality Check
+This application is designed as a **local always-on server** for a physical retail store (one machine runs the Node server, multiple devices on the same LAN connect to it for live billing with WebSockets and a local SQLite database).
+
+**It cannot be deployed to Vercel "as-is"** for these technical reasons:
+
+- Uses `better-sqlite3` (native C++ addon) → Vercel serverless cannot compile native modules.
+- Relies on a persistent local SQLite file (`data/invbill.db`) → serverless functions have no disk persistence.
+- Uses long-running WebSocket server (`ws` package + `app.listen`) → Vercel serverless functions are short-lived request/response only.
+- The app expects to run continuously (multi-device real-time sync for cashiers).
+
+### Recommended Path (Easiest & Best Fit)
+If you want to host this exact version with minimal changes, use a platform that supports traditional Node.js apps with native modules and persistent storage:
+
+- **Railway.app** (recommended – free tier + volume for the .db file + WebSockets)
+- Render.com
+- Fly.io
+- A cheap VPS (DigitalOcean, Hetzner, etc.) + PM2
+
+These platforms let you push the current code via Git and it will "just work" for a real store.
+
+### GitHub Setup (What I just did for you)
+I have already:
+- Initialized a git repository
+- Created a proper `.gitignore`
+- Made the first two commits
+- Added a starter `vercel.json` (for future experimentation)
+
+**Next steps you must do manually** (open PowerShell in this folder):
+
+```powershell
+# 1. Create a new repository on GitHub (https://github.com/new)
+#    Name it something like `invbill-pos` (do NOT initialize with README)
+
+# 2. Connect and push from here
+git remote add origin https://github.com/YOUR_USERNAME/invbill-pos.git
+git branch -M main
+git push -u origin main
+```
+
+Then:
+- Go to https://vercel.com/new
+- Import your GitHub repo
+- You will see the deploy fail (this is expected right now).
+
+### If You Still Want Vercel (Big Refactor Required)
+To make it work on Vercel you would need to:
+1. Replace `better-sqlite3` + file DB with **Vercel Postgres**, **Turso**, or **Supabase**.
+2. Convert every route in `server.js` into individual serverless functions under an `/api` folder.
+3. Remove or replace the WebSocket real-time system with polling or a third-party realtime service.
+4. The frontend (`index.html`) can stay as a static site.
+
+I can help you with this migration if you decide you really need it on Vercel (it will take several hours of work).
+
+### Quick Recommendation
+For a real store cash register system that multiple staff members use on tablets/phones inside the shop, **Railway or Render** will be dramatically simpler and more reliable than forcing it onto Vercel.
+
+Would you like me to:
+A) Give you the exact commands + Dockerfile / railway.toml for a one-click Railway deploy, or
+B) Start the big refactor to make it Vercel-compatible?
+
+Just say the word and I'll proceed.
